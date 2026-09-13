@@ -3,226 +3,149 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Pet Chicken Farm V1.4</title>
+<title>Pet Chicken Farm V2.0</title>
 <style>
-* { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; box-sizing: border-box; }
-body { background: linear-gradient(to bottom, #a3e635, #84cc16); color: #1a2e05; font-family: 'Comic Sans MS', cursive; padding: 10px; margin: 0; min-height: 100vh; }
+* { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
+body { background: #87ceeb; color: #1a2e05; font-family: 'Comic Sans MS', cursive; padding: 10px; margin: 0; }
 
 #header { background: white; padding: 15px; border-radius: 20px; margin-bottom: 12px; border: 4px solid #65a30d; font-size: 22px; text-align: center; box-shadow: 0 4px 0 #4d7c0f; }
 #koin { font-weight: bold; color: #eab308; font-size: 26px; }
 
-.shop { background: white; padding: 15px; border-radius: 20px; margin: 12px 0; border: 4px solid #65a30d; box-shadow: 0 4px 0 #4d7c0f; }
+.shop { background: white; padding: 15px; border-radius: 20px; margin: 12px 0; border: 4px solid #65a30d; }
 .shop h3 { margin: 0 0 12px 0; text-align: center; }
-.item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f7fee7; border-radius: 12px; margin: 10px 0; border: 2px solid #d9f99d; }
-.stok { font-weight: bold; color: #65a30d; margin: 0 10px; font-size: 18px; }
+.item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f7fee7; border-radius: 12px; margin: 10px 0; }
+.stok { font-weight: bold; color: #65a30d; font-size: 18px; }
 
-.kandang { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 15px 0; }
-.slot { background: #fefce8; border: 4px dashed #a3a3a3; border-radius: 20px; height: 120px; display: flex; align-items: center; justify-content: center; font-size: 55px; position: relative; cursor: pointer; overflow: hidden; transition: 0.2s; }
-.slot:hover { background: #fffbeb; }
-.slot.makan { animation: matuk 0.25s 4; }
-@keyframes matuk { 0%,100%{transform: translateY(0) scale(1)} 50%{transform: translateY(-12px) scale(1.1)} }
+/* KANDANG BESAR */
+.kandang-besar { 
+  width: 100%; max-width: 400px; height: 300px; margin: 15px auto; position: relative;
+  background: url('https://i.imgur.com/8Qz3pLk.png') center/cover no-repeat; /* Ganti pake link gambar lu */
+  border-radius: 20px; border: 4px solid #8b4513; box-shadow: 0 8px 0 #654321;
+  overflow: hidden;
+}
+.palungan { position: absolute; left: 10%; top: 50%; width: 80px; height: 30px; background: #a0522d; border-radius: 10px; cursor: pointer; }
+.gudang { position: absolute; right: 5%; top: 5%; width: 80px; height: 80px; background: #dc2626; border-radius: 10px; cursor: pointer; border: 3px solid white; }
+.gudang::after { content: '🏠'; position: absolute; font-size: 40px; left: 20px; top: 15px; }
 
-/* SEMUA ANIMASI AYAM */
-.telur-goyang { display: inline-block; animation: goyang 0.6s ease-in-out infinite; }
+/* AYAM */
+.ayam { position: absolute; font-size: 35px; transition: all 1s linear; }
+.ayam-anak { animation: jalan 2s ease-in-out infinite alternate; }
+.ayam-dewasa { animation: bob 1.2s ease-in-out infinite; }
+@keyframes jalan { 0%{transform: translateX(-5px);} 100%{transform: translateX(5px);} }
+@keyframes bob { 0%,100%{transform: translateY(0);} 50%{transform: translateY(-8px);} }
+.telur { position: absolute; font-size: 30px; animation: goyang 0.6s infinite; }
 @keyframes goyang { 0%,100%{transform: rotate(-5deg);} 50%{transform: rotate(5deg);} }
 
-.ayam-anak { display: inline-block; animation: lari 0.4s ease-in-out infinite alternate; }
-@keyframes lari { 0%{transform: translateX(-4px) rotate(-5deg);} 100%{transform: translateX(4px) rotate(5deg);} }
+.jagung-terbang { position: absolute; font-size: 25px; animation: sebar 1s forwards; pointer-events: none; }
+@keyframes sebar { from{opacity:1; transform: scale(1);} to{opacity:0; transform: translateY(50px) scale(0.5);} }
 
-.ayam-dewasa { display: inline-block; animation: bob 1.2s ease-in-out infinite; position: relative; }
-.ayam-dewasa::after { content: '🪽'; position: absolute; font-size: 22px; right: -8px; top: -8px; animation: kipass 1.5s ease-in-out infinite; }
-@keyframes bob { 0%,100%{transform: translateY(0) rotate(-2deg);} 50%{transform: translateY(-10px) rotate(2deg);} }
-@keyframes kipass { 0%,100%{opacity:1; transform: rotate(0);} 50%{opacity:0; transform: rotate(20deg);} }
-
-/* EFEK LAIN */
-.slot.bar { position: absolute; bottom: 6px; left: 6px; right: 6px; height: 10px; background: #ddd; border-radius: 8px; overflow: hidden; border: 1px solid #999; }
-.slot.bar-fill { height: 100%; background: linear-gradient(90deg, #22c55e, #4ade80); width: 0%; transition: width 0.5s linear; }
-.slot.timer { position: absolute; top: 6px; font-size: 13px; font-weight: bold; background: rgba(0,0,0,0.7); color: white; padding: 3px 8px; border-radius: 8px; }
-
-.jagung-terbang { position: absolute; font-size: 28px; z-index: 99; animation: terbang 0.7s forwards; pointer-events: none; }
-@keyframes terbang { from {transform: scale(1) rotate(0);} to {transform: translate(var(--x), var(--y)) scale(0.3) rotate(360deg); opacity: 0;} }
-
-.partikel { position: absolute; font-size: 16px; animation: pecah 0.9s forwards; pointer-events: none; }
-@keyframes pecah { 0%{opacity:1; transform: scale(1);} 100%{opacity:0; transform: translate(var(--rx), var(--ry)) rotate(720deg) scale(0);} }
-
-button { background: #65a30d; color: white; border: none; padding: 12px 18px; border-radius: 12px; font-weight: bold; cursor: pointer; box-shadow: 0 3px 0 #4d7c0f; font-size: 15px; }
-button:active { transform: translateY(2px); box-shadow: 0 1px 0 #4d7c0f; }
-button:disabled { background: gray; box-shadow: 0 3px 0 #555; }
-
-#notif { position: fixed; top: 25px; left: 50%; transform: translateX(-50%); background: #22c55e; color: white; padding: 12px 25px; border-radius: 15px; display: none; z-index: 100; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+button { background: #65a30d; color: white; border: none; padding: 12px 18px; border-radius: 12px; font-weight: bold; box-shadow: 0 3px 0 #4d7c0f; }
+#notif { position: fixed; top: 25px; left: 50%; transform: translateX(-50%); background: #22c55e; color: white; padding: 12px 25px; border-radius: 15px; display: none; z-index: 100; }
 </style>
 </head>
 <body>
 
-<div id="header">
-  💰 KOIN: <span id="koin">500</span>
-</div>
+<div id="header">💰 KOIN: <span id="koin">500</span></div>
 
 <div class="shop">
-  <h3>🛒 TOKO PETERNAKAN</h3>
-  <div class="item">
-    <span>🥚 Telur Ayam</span>
-    <button onclick="beliTelur(100)">BELI 100</button>
-  </div>
-  <div class="item">
-    <span>🌽 Pakan Jagung <span class="stok" id="stok-jagung">x0</span></span>
-    <button onclick="beliPakan('jagung', 50)">BELI 50</button>
-  </div>
-  <div class="item">
-    <span>🌽🌽 Jagung Super <span class="stok" id="stok-super">x0</span></span>
-    <button onclick="beliPakan('super', 200)">BELI 200</button>
-  </div>
+  <h3>🛒 GUDANG / TOKO</h3>
+  <div class="item"><span>🥚 Telur Ayam</span><span class="stok" id="stok-telur">x0</span><button onclick="beliTelur(100)">BELI 100</button></div>
+  <div class="item"><span>🌽 Pakan Jagung</span><span class="stok" id="stok-jagung">x0</span><button onclick="beliPakan('jagung', 50)">BELI 50</button></div>
+  <div class="item"><span>🌽🌽 Jagung Super</span><span class="stok" id="stok-super">x0</span><button onclick="beliPakan('super', 200)">BELI 200</button></div>
 </div>
 
-<h3 style="text-align:center;">🏠 KANDANG</h3>
-<div class="kandang" id="kandang"></div>
+<h3 style="text-align:center;">🏠 KANDANG BESAR</h3>
+<div class="kandang-besar" id="kandang">
+  <div class="palungan" onclick="sebarPakan()" title="Klik buat kasih makan"></div>
+  <div class="gudang" onclick="showShop()" title="Buka Gudang"></div>
+</div>
 
 <div id="notif"></div>
 
 <script>
 let koin = +localStorage.farm_koin || 500;
 let inventory = JSON.parse(localStorage.farm_inv || '{"telur":0,"jagung":0,"super":0}');
-let kandang = JSON.parse(localStorage.farm_kandang || '[]');
+let ayamList = JSON.parse(localStorage.farm_ayam || '[]'); // isi: {x,y,stage,start,boost}
 
-const WAKTU_TETAS = 10000; // 10 detik
-const WAKTU_DEWASA = 30000; // 30 detik
+const WAKTU_TETAS = 10000;
+const WAKTU_DEWASA = 30000;
 
 function save(){
-  localStorage.farm_koin = koin;
+  localStorage.farm_koin = koin; 
   localStorage.farm_inv = JSON.stringify(inventory);
-  localStorage.farm_kandang = JSON.stringify(kandang);
+  localStorage.farm_ayam = JSON.stringify(ayamList);
   document.getElementById('koin').innerText = koin.toLocaleString('id');
+  document.getElementById('stok-telur').innerText = 'x' + inventory.telur;
   document.getElementById('stok-jagung').innerText = 'x' + inventory.jagung;
   document.getElementById('stok-super').innerText = 'x' + inventory.super;
-  renderKandang();
+  renderAyam();
 }
 
-function beliTelur(harga){
-  if(koin < harga) return showNotif('❌ Koin kurang!');
-  koin -= harga; inventory.telur++;
-  showNotif('🥚 Telur dibeli!');
-  let slotKosong = kandang.findIndex(s =>!s);
-  if(slotKosong!== -1) taruhTelur(slotKosong);
-  save();
-}
+function beliTelur(harga){ if(koin < harga) return showNotif('❌ Koin kurang!'); koin -= harga; inventory.telur++; showNotif('🥚 Telur dibeli!'); taruhTelur(); save(); }
+function beliPakan(jenis, harga){ if(koin < harga) return showNotif('❌ Koin kurang!'); koin -= harga; inventory[jenis]++; showNotif(`🌽 Pakan ${jenis} dibeli!`); save(); }
+function showShop(){ document.querySelector('.shop').scrollIntoView(); }
 
-function beliPakan(jenis, harga){
-  if(koin < harga) return showNotif('❌ Koin kurang!');
-  koin -= harga; inventory[jenis]++;
-  showNotif(`🌽 Pakan ${jenis} dibeli!`);
-  save();
-}
-
-function taruhTelur(index){
+function taruhTelur(){
   if(inventory.telur <= 0) return;
   inventory.telur--;
-  kandang[index] = { stage: 'telur', start: Date.now(), boost: 1 };
+  ayamList.push({ 
+    x: Math.random()*70 + 10, y: Math.random()*50 + 30, 
+    stage: 'telur', start: Date.now(), boost: 1 
+  });
 }
 
-function beriPakan(index, e){
-  if(!kandang[index] || kandang[index].stage!== 'anak') return;
-
+function sebarPakan(){
   let jenis = inventory.super > 0? 'super' : inventory.jagung > 0? 'jagung' : null;
   if(!jenis) return showNotif('❌ Pakan Habis! Beli di Toko');
-
+  
   inventory[jenis]--;
-  kandang[index].boost = jenis === 'super'? 3 : 1;
-  kandang[index].start = Date.now(); // reset timer biar kerasa cepet
-
-  animasiKasihPakan(e, index, jenis);
-  showNotif(jenis === 'super'? '✨ Yummy Super! 3x Cepat' : '😋 Nyam Nyam!');
-  save();
-}
-
-function animasiKasihPakan(e, index){
-  let slot = document.querySelectorAll('.slot')[index];
-  slot.classList.add('makan');
-  setTimeout(()=>slot.classList.remove('makan'), 1200);
-
-  // Animasi jagung terbang
-  let jagung = document.createElement('div');
-  jagung.className = 'jagung-terbang';
-  jagung.innerText = '🌽';
-  jagung.style.left = '85%'; jagung.style.top = '20%';
-  jagung.style.setProperty('--x', e.clientX - slot.getBoundingClientRect().left - 30 + 'px');
-  jagung.style.setProperty('--y', e.clientY - slot.getBoundingClientRect().top - 30 + 'px');
-  slot.appendChild(jagung);
-  setTimeout(()=>jagung.remove(), 700);
-
-  // Partikel acak
-  for(let i=0; i<6; i++){
-    let p = document.createElement('div');
-    p.className = 'partikel'; p.innerText = '✨';
-    p.style.left = '50%'; p.style.top = '50%';
-    p.style.setProperty('--rx', (Math.random()-0.5)*60 + 'px');
-    p.style.setProperty('--ry', (Math.random()-0.5)*60 + 'px');
-    slot.appendChild(p);
-    setTimeout(()=>p.remove(), 900);
+  // Kasih boost ke semua ayam anak
+  ayamList.forEach(a => { if(a.stage === 'anak'){ a.boost = jenis === 'super'? 3 : 1; a.start = Date.now(); } });
+  
+  // Animasi sebar jagung
+  let kandang = document.getElementById('kandang');
+  for(let i=0; i<10; i++){
+    let j = document.createElement('div'); j.className = 'jagung-terbang'; j.innerText = '🌽';
+    j.style.left = Math.random()*80 + 10 + '%'; j.style.top = '40%';
+    kandang.appendChild(j); setTimeout(()=>j.remove(), 1000);
   }
+  showNotif(jenis === 'super'? '✨ Pakan Super disebar!' : '😋 Pakan disebar!');
+  save();
 }
 
 function jualAyam(index){
-  if(!kandang[index] || kandang[index].stage!== 'dewasa') return;
-  let bonus = kandang[index].boost === 3? 500 : 200;
-  koin += bonus; kandang[index] = null;
+  let bonus = ayamList[index].boost === 3? 500 : 200;
+  koin += bonus; ayamList.splice(index, 1);
   showNotif(`💰 Ayam dijual +${bonus} koin!`);
   save();
 }
 
-function renderKandang(){
-  let wrap = document.getElementById('kandang');
-  wrap.innerHTML = '';
-  for(let i=0; i<9; i++){
-    let slot = document.createElement('div');
-    slot.className = 'slot';
-    let data = kandang[i];
-
-    if(!data) {
-      slot.innerText = '+';
-      slot.onclick = () => taruhTelur(i);
+function renderAyam(){
+  let kandang = document.getElementById('kandang');
+  kandang.querySelectorAll('.ayam,.telur').forEach(el => el.remove());
+  
+  ayamList.forEach((a, i) => {
+    let now = Date.now(); let elapsed = now - a.start;
+    
+    if(a.stage === 'telur' && elapsed > WAKTU_TETAS){ a.stage = 'anak'; a.start = now; }
+    else if(a.stage === 'anak' && elapsed > WAKTU_DEWASA / a.boost){ a.stage = 'dewasa'; }
+    
+    let el = document.createElement('div');
+    el.style.left = a.x + '%'; el.style.top = a.y + '%';
+    
+    if(a.stage === 'telur'){
+      el.className = 'telur'; el.innerText = '🥚';
     } else {
-      let now = Date.now();
-      let elapsed = now - data.start;
-
-      // Update stage
-      if(data.stage === 'telur' && elapsed > WAKTU_TETAS){
-        data.stage = 'anak';
-        data.start = now;
-        showNotif('🐤 Telur menetas!');
-      } else if(data.stage === 'anak' && elapsed > WAKTU_DEWASA / data.boost){
-        data.stage = 'dewasa';
-        showNotif('🐔 Ayam Dewasa! Siap jual');
-      }
-
-      // Tentukan emoji + class animasi
-      let emoji = data.stage === 'telur'? '🥚' : data.stage === 'anak'? '🐤' : '🐔';
-      let classAyam = data.stage === 'telur'? 'telur-goyang' : data.stage === 'anak'? 'ayam-anak' : 'ayam-dewasa';
-
-      slot.innerHTML = `<span class="${classAyam}">${emoji}</span>`;
-      slot.onclick = (e) => data.stage === 'anak'? beriPakan(i, e) : data.stage === 'dewasa'? jualAyam(i) : {};
-
-      // Progress bar
-      if(data.stage!== 'dewasa'){
-        let total = data.stage === 'telur'? WAKTU_TETAS : WAKTU_DEWASA / data.boost;
-        let pct = Math.min(100, elapsed / total * 100);
-        slot.innerHTML += `<div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div>`;
-        slot.innerHTML += `<div class="timer">${Math.ceil((total-elapsed)/1000)}s</div>`;
-      }
+      el.className = 'ayam ' + (a.stage === 'anak'? 'ayam-anak' : 'ayam-dewasa');
+      el.innerText = a.stage === 'anak'? '🐤' : '🐔';
+      if(a.stage === 'dewasa') el.onclick = () => jualAyam(i);
     }
-    wrap.appendChild(slot);
-  }
+    kandang.appendChild(el);
+  });
 }
 
-function showNotif(teks){
-  let n = document.getElementById('notif');
-  n.innerText = teks; n.style.display = 'block';
-  setTimeout(()=> n.style.display = 'none', 1800);
-}
-
-// Auto save tiap 1 detik
-setInterval(save, 1000);
-kandang = Array(9).fill(null).concat(kandang).slice(0,9);
-save();
+function showNotif(teks){ let n = document.getElementById('notif'); n.innerText = teks; n.style.display = 'block'; setTimeout(()=> n.style.display = 'none', 1800); }
+setInterval(save, 1000); save();
 </script>
 </body>
 </html>
