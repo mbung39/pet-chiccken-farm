@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Pet Chicken Farm</title>
+<style>
+* { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
+body { background: #84cc16; color: #1a2e05; font-family: 'Comic Sans MS', cursive; padding: 10px; margin: 0; }
+
+#header { background: white; padding: 12px; border-radius: 15px; margin-bottom: 10px; border: 3px solid #65a30d; }
+#koin { font-size: 28px; font-weight: bold; color: #eab308; }
+
+.shop { background: white; padding: 12px; border-radius: 15px; margin: 10px 0; border: 3px solid #65a30d; }
+.shop h3 { margin: 0 0 10px 0; }
+.item { display: flex; justify-content: space-between; padding: 10px; background: #f7fee7; border-radius: 10px; margin: 8px 0; }
+
+.kandang { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
+.slot { background: #fefce8; border: 3px dashed #a3a3a3; border-radius: 15px; height: 110px; display: flex; align-items: center; justify-content: center; font-size: 50px; position: relative; cursor: pointer; }
+.slot.bar { position: absolute; bottom: 5px; left: 5px; right: 5px; height: 8px; background: #ddd; border-radius: 5px; overflow: hidden; }
+.slot.bar-fill { height: 100%; background: #22c55e; width: 0%; transition: width 0.5s; }
+.slot.timer { position: absolute; top: 5px; font-size: 12px; font-weight: bold; background: rgba(0,0,0,0.6); color: white; padding: 2px 6px; border-radius: 5px; }
+
+button { background: #65a30d; color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+button:disabled { background: gray; }
+
+#notif { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #22c55e; color: white; padding: 10px 20px; border-radius: 10px; display: none; }
+</style>
+</head>
+<body>
+
+<div id="header">
+  💰 KOIN: <span id="koin">500</span>
+</div>
+
+<div class="shop">
+  <h3>🛒 TOKO</h3>
+  <div class="item">
+    <span>🥚 Telur Ayam</span>
+    <button onclick="beliTelur(100)">BELI 100</button>
+  </div>
+  <div class="item">
+    <span>🌽 Pakan Jagung</span>
+    <button onclick="beliPakan('biasa', 50)">BELI 50</button>
+  </div>
+  <div class="item">
+    <span>🌽🌽 Jagung Super</span>
+    <button onclick="beliPakan('super', 200)">BELI 200</button>
+  </div>
+</div>
+
+<h3 style="text-align:center;">🏠 KANDANG</h3>
+<div class="kandang" id="kandang"></div>
+
+<div id="notif"></div>
+
+<script>
+let koin = +localStorage.farm_koin || 500;
+let inventory = { telur: 0, jagung: 0, super: 0 };
+let kandang = JSON.parse(localStorage.farm_kandang || '[]');
+
+const WAKTU_TETAS = 10000; // 10 detik
+const WAKTU_DEWASA = 30000; // 30 detik
+
+function save(){
+  localStorage.farm_koin = koin;
+  localStorage.farm_kandang = JSON.stringify(kandang);
+  document.getElementById('koin').innerText = koin.toLocaleString('id');
+  renderKandang();
+}
+
+function beliTelur(harga){
+  if(koin < harga) return showNotif('❌ Koin kurang!');
+  koin -= harga;
+  inventory.telur++;
+  showNotif('🥚 Telur dibeli!');
+  let slotKosong = kandang.findIndex(s =>!s);
+  if(slotKosong!== -1) taruhTelur(slotKosong);
+  save();
+}
+
+function beliPakan(jenis, harga){
+  if(koin < harga) return showNotif('❌ Koin kurang!');
+  koin -= harga;
+  inventory[jenis]++;
+  showNotif(`🌽 Pakan ${jenis} dibeli!`);
+  save();
+}
+
+function taruhTelur(index){
+  if(inventory.telur <= 0) return;
+  inventory.telur--;
+  kandang[index] = { stage: 'telur', start: Date.now(), boost: 1 };
+}
+
+function beriPakan(index){
+  if(!kandang[index] || kandang[index].stage!== 'anak') return;
+  if(inventory.jagung > 0){ inventory.jagung--; kandang[index].boost = 1; }
+  else if(inventory.super > 0){ inventory.super--; kandang[index].boost = 3; }
+  else return showNotif('❌ Pakan habis!');
+  showNotif('🌽 Ayam dikasih makan!');
+}
+
+function jualAyam(index){
+  if(!kandang[index] || kandang[index].stage!== 'dewasa') return;
+  let bonus = kandang[index].boost === 3? 500 : 200;
+  koin += bonus;
+  kandang[index] = null;
+  showNotif(`💰 Ayam dijual +${bonus} koin!`);
+  save();
+}
+
+function renderKandang(){
+  let wrap = document.getElementById('kandang');
+  wrap.innerHTML = '';
+  for(let i=0; i<9; i++){
+    let slot = document.createElement('div');
+    slot.className = 'slot';
+    let data = kandang[i];
+
+    if(!data) {
+      slot.innerText = '+';
+      slot.onclick = () => taruhTelur(i);
+    } else {
+      let now = Date.now();
+      let elapsed = now - data.start;
+
+      if(data.stage === 'telur' && elapsed > WAKTU_TETAS){
+        data.stage = 'anak'; data.start = now;
+      } else if(data.stage === 'anak' && elapsed > WAKTU_DEWASA / data.boost){
+        data.stage = 'dewasa';
+      }
+
+      let emoji = data.stage === 'telur'? '🥚' : data.stage === 'anak'? '🐤' : '🐔';
+      slot.innerHTML = emoji;
+      slot.onclick = () => data.stage === 'anak'? beriPakan(i) : data.stage === 'dewasa'? jualAyam(i) : {};
+
+      if(data.stage!== 'dewasa'){
+        let total = data.stage === 'telur'? WAKTU_TETAS : WAKTU_DEWASA / data.boost;
+        let pct = Math.min(100, elapsed / total * 100);
+        slot.innerHTML += `<div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div>`;
+        slot.innerHTML += `<div class="timer">${Math.ceil((total-elapsed)/1000)}s</div>`;
+      }
+    }
+    wrap.appendChild(slot);
+  }
+}
+
+function showNotif(teks){
+  let n = document.getElementById('notif');
+  n.innerText = teks; n.style.display = 'block';
+  setTimeout(()=> n.style.display = 'none', 1500);
+}
+
+setInterval(save, 1000);
+kandang = Array(9).fill(null).concat(kandang).slice(0,9);
+save();
+</script>
+</body>
+</html>
