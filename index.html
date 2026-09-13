@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Chicken Gotchi V4.1</title>
+<title>Chicken Gotchi V4.2</title>
 <style>
 * { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
 body { background: #c4f1f9; color: #1a2e05; font-family: 'Comic Sans MS', cursive; padding: 10px; margin: 0; display: flex; justify-content: center; }
@@ -15,12 +15,12 @@ body { background: #c4f1f9; color: #1a2e05; font-family: 'Comic Sans MS', cursiv
 .pet { font-size: 120px; animation: goyang 1s ease-in-out infinite; }
 @keyframes goyang { 0%,100%{transform: rotate(-5deg) scale(1);} 50%{transform: rotate(5deg) scale(1.05);} }
 
-/* BAR XP BARU */
 .xp-container { margin-top: 8px; }
 .xp-text { font-size: 12px; text-align: center; font-weight: bold; color: #a16207; }
 .xp-bar { width: 100%; height: 12px; background: #a3e635; border-radius: 10px; border: 2px solid #65a30d; overflow: hidden; }
 .xp-fill { height: 100%; background: linear-gradient(90deg, #fbbf24, #f59e0b); transition: width 0.3s; }
 
+.timer { text-align: center; font-size: 14px; color: #dc2626; font-weight: bold; }
 .status { display: flex; justify-content: space-around; font-size: 11px; position: absolute; bottom: 10px; left: 0; right: 0; }
 .bar { width: 50px; height: 8px; background: #a3e635; border-radius: 5px; overflow: hidden; border: 2px solid #65a30d; }
 .bar-fill { height: 100%; background: #22c55e; transition: width 0.3s; }
@@ -37,13 +37,13 @@ body { background: #c4f1f9; color: #1a2e05; font-family: 'Comic Sans MS', cursiv
   <div class="layar">
     <div class="umur" id="umur">Umur: 0 Hari</div>
     <div class="level" id="level"></div>
+    <div class="timer" id="timer"></div>
     <div class="progres" id="progres"></div>
     
     <div class="pet-area">
       <span class="pet" id="pet">🥚</span>
     </div>
     
-    <!-- BAR XP MUNCUL KALO DEWASA -->
     <div class="xp-container" id="xp-container" style="display:none;">
       <div class="xp-text" id="xp-text">EXP: 0/300</div>
       <div class="xp-bar"><div class="xp-fill" id="xp-fill"></div></div>
@@ -67,7 +67,15 @@ body { background: #c4f1f9; color: #1a2e05; font-family: 'Comic Sans MS', cursiv
 </div>
 
 <script>
-let data = JSON.parse(localStorage.chicken_gotchi_v4 || '{"stage":"telur","umur":0,"lvl":1,"xp":0,"pakanCount":0,"targetXp":10,"lapar":100,"bahagia":100,"energi":100,"startTime":Date.now()}');
+// KALO BELUM ADA DATA, BIKIN BARU DENGAN startTime BENERAN
+if(!localStorage.chicken_gotchi_v4){
+  localStorage.chicken_gotchi_v4 = JSON.stringify({
+    stage:"telur","umur":0,"lvl":1,"xp":0,"pakanCount":0,"targetXp":10,
+    "lapar":100,"bahagia":100,"energi":100,"startTime":Date.now()
+  });
+}
+
+let data = JSON.parse(localStorage.chicken_gotchi_v4);
 
 function save(){
   localStorage.chicken_gotchi_v4 = JSON.stringify(data);
@@ -87,11 +95,17 @@ function render(){
   document.getElementById('pet').innerText = emoji;
   document.getElementById('umur').innerText = `Umur: ${data.umur} Hari`;
   
+  // TIMER NETAS
+  if(data.stage === 'telur'){
+    let sisa = 10 - Math.floor((Date.now() - data.startTime) / 1000);
+    document.getElementById('timer').innerText = sisa > 0 ? `Netas dalam: ${sisa} detik` : '';
+  } else {
+    document.getElementById('timer').innerText = '';
+  }
+  
   if(data.stage === 'dewasa'){
     document.getElementById('level').innerText = `LVL ${data.lvl}`;
     document.getElementById('progres').innerText = `XP: ${data.xp}/${data.targetXp} Pakan`;
-    
-    // TAMPILIN BAR XP
     document.getElementById('xp-container').style.display = 'block';
     document.getElementById('xp-text').innerText = `EXP: ${data.xp}/${data.targetXp}`;
     let persen = (data.xp / data.targetXp) * 100;
@@ -99,14 +113,14 @@ function render(){
   } else {
     document.getElementById('level').innerText = '';
     document.getElementById('progres').innerText = `Progress: ${data.pakanCount}/${data.targetXp} Pakan`;
-    document.getElementById('xp-container').style.display = 'none'; // SEMBUNYIIN KALO BELUM DEWASA
+    document.getElementById('xp-container').style.display = 'none';
   }
 }
 
 function cekEvolusi(){
   let elapsed = (Date.now() - data.startTime) / 1000;
   
-  if(data.stage === 'telur' && elapsed > 10){
+  if(data.stage === 'telur' && elapsed >= 10){ // >= biar pasti ke trigger
     data.stage = 'bayi'; data.targetXp = 50; data.pakanCount = 0;
     showNotif('🎉 SELAMAT! TELUR NETAS JADI ANAK AYAM!');
   }
@@ -120,7 +134,7 @@ function cekEvolusi(){
   }
   else if(data.stage === 'dewasa' && data.xp >= data.targetXp){
     data.lvl++; data.xp = 0; 
-    data.targetXp = 200 + (data.lvl - 1) * 50; // +50 tiap lvl
+    data.targetXp = 200 + (data.lvl - 1) * 50;
     showNotif(`🎉 CONGRATS! NAIK KE LVL ${data.lvl}!`);
   }
 }
@@ -140,10 +154,11 @@ function tidur(){ data.energi = Math.min(100, data.energi + 30); showNotif('Zzz.
 function showNotif(teks){ document.getElementById('notif').innerText = teks; setTimeout(()=> document.getElementById('notif').innerText = '', 2000); }
 
 setInterval(()=>{ 
+  cekEvolusi(); // CEK TIAP DETIK
   let hari = Math.floor((Date.now() - data.startTime) / 1000 / 60 / 60 / 24);
   if(hari > data.umur) data.umur = hari;
   save();
-}, 60000);
+}, 1000); // 1 detik biar timer jalan
 
 save();
 </script>
