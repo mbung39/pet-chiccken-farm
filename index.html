@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Chicken Gotchi V4.5</title>
+<title>Chicken Gotchi V4.6</title>
 <style>
 * { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
 body { background: #c4f1f9; color: #1a2e05; font-family: 'Comic Sans MS', cursive; padding: 10px; margin: 0; display: flex; justify-content: center; }
@@ -12,23 +12,23 @@ body { background: #c4f1f9; color: #1a2e05; font-family: 'Comic Sans MS', cursiv
 .umur { text-align: center; font-size: 14px; font-weight: bold; color: #365314; }
 .level { text-align: center; font-size: 18px; font-weight: bold; color: #ca8a04; text-shadow: 1px 1px 2px white; }
 
-/* KANDANG BARU */
+/* KANDANG TRANSPARAN */
 .kandang { 
   position: absolute; 
   top: 90px; 
   left: 15px; 
   right: 15px; 
   bottom: 65px; 
-  border: 4px solid #fb923c; /* GARIS ORANGE */
+  border: 4px solid #fb923c; /* GARIS OREN DOANG */
   border-radius: 10px; 
-  background: rgba(251, 146, 60, 0.1); /* TRANSPARAN DIKIT */
+  background: transparent; /* DALEMNYA TRANSPARAN */
+  pointer-events: none; /* BIAR GA GANGGU KLIK */
 }
 .pet-area { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
 .pet { 
   font-size: 70px; 
   position: absolute; 
-  bottom: 5px; 
-  transition: all 0.5s ease; /* JALAN LEBIH HALUS */
+  transition: all 0.8s ease-in-out; /* JALAN LEBIH LAMA BIAR KELIATAN */
 }
 
 .xp-container { margin-top: 8px; }
@@ -56,7 +56,6 @@ body { background: #c4f1f9; color: #1a2e05; font-family: 'Comic Sans MS', cursiv
     <div class="timer" id="timer"></div>
     <div class="progres" id="progres"></div>
     
-    <!-- KANDANG -->
     <div class="kandang">
       <div class="pet-area">
         <span class="pet" id="pet">🥚</span>
@@ -113,7 +112,7 @@ function render(){
   let petEl = document.getElementById('pet');
   petEl.innerText = emoji;
   petEl.style.left = data.posX + '%';
-  petEl.style.bottom = data.posY + '%';
+  petEl.style.top = data.posY + '%'; // GANTI JADI TOP BIAR GA STUCK
   
   document.getElementById('umur').innerText = `Umur: ${data.umur} Hari`;
   
@@ -140,13 +139,13 @@ function render(){
 
 function jalanAcak(){
   if(data.stage !== 'telur'){
-    // JALAN RANDOM DI DALAM KANDANG 10% - 90%
-    data.posX += (Math.random() - 0.5) * 15;
-    data.posY += (Math.random() - 0.5) * 10;
+    // JALAN RANDOM LEBIH BESAR BIAR KELIATAN
+    data.posX += (Math.random() - 0.5) * 30;
+    data.posY += (Math.random() - 0.5) * 20;
     
-    // LOCK BIAR GA KELUAR KANDANG
-    data.posX = Math.max(10, Math.min(90, data.posX));
-    data.posY = Math.max(5, Math.min(80, data.posY));
+    // LOCK DI KANDANG
+    data.posX = Math.max(15, Math.min(85, data.posX));
+    data.posY = Math.max(10, Math.min(75, data.posY));
   }
 }
 
@@ -193,7 +192,7 @@ setInterval(()=>{
   let hari = Math.floor((Date.now() - data.startTime) / 1000 / 60 / 60 / 24);
   if(hari > data.umur) data.umur = hari;
   save();
-}, 2000);
+}, 2500); // 2.5 detik biar jalan lebih keliatan
 
 save();
 </script>
