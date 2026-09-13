@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Chicken Gotchi V4.3</title>
+<title>Chicken Gotchi V4.4</title>
 <style>
 * { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
 body { background: #c4f1f9; color: #1a2e05; font-family: 'Comic Sans MS', cursive; padding: 10px; margin: 0; display: flex; justify-content: center; }
@@ -11,9 +11,9 @@ body { background: #c4f1f9; color: #1a2e05; font-family: 'Comic Sans MS', cursiv
 .layar { background: #d9f99d; border: 4px solid #65a30d; border-radius: 20px; padding: 10px; height: 300px; position: relative; overflow: hidden; }
 .umur { text-align: center; font-size: 14px; font-weight: bold; color: #365314; }
 .level { text-align: center; font-size: 18px; font-weight: bold; color: #ca8a04; text-shadow: 1px 1px 2px white; }
-.pet-area { position: absolute; bottom: 50px; left: 0; right: 0; height: 80px; } /* LOCK DI BAWAH */
-.pet { font-size: 80px; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); transition: left 0.3s; } /* UKURAN DIKECILIN */
-.lantai { position: absolute; bottom: 45px; left: 10px; right: 10px; height: 4px; background: #a16207; border-radius: 2px; } /* GARIS MERAH LU */
+.pet-area { position: absolute; bottom: 50px; left: 0; right: 0; height: 80px; }
+.pet { font-size: 80px; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); transition: left 0.3s ease; } /* TRANSISI HALUS */
+/* .lantai DIHAPUS */
 
 .xp-container { margin-top: 8px; }
 .xp-text { font-size: 12px; text-align: center; font-weight: bold; color: #a16207; }
@@ -42,7 +42,7 @@ body { background: #c4f1f9; color: #1a2e05; font-family: 'Comic Sans MS', cursiv
     
     <div class="pet-area">
       <span class="pet" id="pet">🥚</span>
-      <div class="lantai"></div> <!-- INI GARIS MERAHNYA -->
+      <!-- GARIS LANTAI UDAH DIHAPUS -->
     </div>
     
     <div class="xp-container" id="xp-container" style="display:none;">
@@ -94,7 +94,7 @@ function render(){
   
   let petEl = document.getElementById('pet');
   petEl.innerText = emoji;
-  petEl.style.left = data.pos + '%'; // BISA JALAN KEKANAN KEKIRI
+  petEl.style.left = data.pos + '%';
   
   document.getElementById('umur').innerText = `Umur: ${data.umur} Hari`;
   
@@ -121,8 +121,8 @@ function render(){
 
 function jalanAcak(){
   if(data.stage !== 'telur'){
-    data.pos += (Math.random() - 0.5) * 20; // Jalan random -10 sampai +10
-    data.pos = Math.max(10, Math.min(90, data.pos)); // Ga keluar layar
+    data.pos += (Math.random() - 0.5) * 20;
+    data.pos = Math.max(10, Math.min(90, data.pos));
   }
 }
 
@@ -153,7 +153,7 @@ function kasihMakan(){
   data.lapar = Math.min(100, data.lapar + 20);
   data.pakanCount++;
   if(data.stage === 'dewasa') data.xp++;
-  jalanAcak(); // TIAP MAKAN JALAN
+  jalanAcak();
   cekEvolusi();
   showNotif('+1 Pakan!');
   save();
@@ -165,7 +165,7 @@ function showNotif(teks){ document.getElementById('notif').innerText = teks; set
 
 setInterval(()=>{ 
   cekEvolusi();
-  jalanAcak(); // JALAN SENDIRI TIAP 2 DETIK
+  jalanAcak();
   let hari = Math.floor((Date.now() - data.startTime) / 1000 / 60 / 60 / 24);
   if(hari > data.umur) data.umur = hari;
   save();
