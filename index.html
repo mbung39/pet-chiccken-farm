@@ -3,35 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Chicken Gotchi V3.1</title>
+<title>Chicken Gotchi V4.1</title>
 <style>
 * { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
 body { background: #c4f1f9; color: #1a2e05; font-family: 'Comic Sans MS', cursive; padding: 10px; margin: 0; display: flex; justify-content: center; }
-
 .gotchi { width: 100%; max-width: 350px; background: #f0f9ff; border: 8px solid #38bdf8; border-radius: 40px; padding: 15px; box-shadow: 0 10px 0 #0284c7; }
-
-.layar { background: #d9f99d; border: 4px solid #65a30d; border-radius: 20px; padding: 10px; height: 280px; position: relative; overflow: hidden; }
-
-.umur { text-align: center; font-size: 14px; font-weight: bold; color: #365314; margin-bottom: 5px; }
-
-.pet-area { text-align: center; height: 180px; display: flex; align-items: center; justify-content: center; flex-direction: column; }
-.pet { font-size: 120px; animation: goyang 1s ease-in-out infinite; } /* TELUR GEDE */
+.layar { background: #d9f99d; border: 4px solid #65a30d; border-radius: 20px; padding: 10px; height: 300px; position: relative; }
+.umur { text-align: center; font-size: 14px; font-weight: bold; color: #365314; }
+.level { text-align: center; font-size: 18px; font-weight: bold; color: #ca8a04; text-shadow: 1px 1px 2px white; }
+.pet-area { text-align: center; height: 140px; display: flex; align-items: center; justify-content: center; }
+.pet { font-size: 120px; animation: goyang 1s ease-in-out infinite; }
 @keyframes goyang { 0%,100%{transform: rotate(-5deg) scale(1);} 50%{transform: rotate(5deg) scale(1.05);} }
-.pet.sedih { animation: gemeter 0.3s infinite; }
-@keyframes gemeter { 0%,100%{transform: rotate(-8deg);} 50%{transform: rotate(8deg);} }
 
-.status { display: flex; justify-content: space-around; font-size: 12px; position: absolute; bottom: 10px; left: 0; right: 0; }
-.bar { width: 60px; height: 8px; background: #a3e635; border-radius: 5px; overflow: hidden; border: 2px solid #65a30d; }
-.bar-fill { height: 100%; background: #22c55e; transition: width 0.5s; }
+/* BAR XP BARU */
+.xp-container { margin-top: 8px; }
+.xp-text { font-size: 12px; text-align: center; font-weight: bold; color: #a16207; }
+.xp-bar { width: 100%; height: 12px; background: #a3e635; border-radius: 10px; border: 2px solid #65a30d; overflow: hidden; }
+.xp-fill { height: 100%; background: linear-gradient(90deg, #fbbf24, #f59e0b); transition: width 0.3s; }
 
-.kotoran { position: absolute; font-size: 20px; bottom: 40px; animation: muncul 0.5s; }
-@keyframes muncul { from{opacity:0; transform: scale(0);} to{opacity:1; transform: scale(1);} }
-
+.status { display: flex; justify-content: space-around; font-size: 11px; position: absolute; bottom: 10px; left: 0; right: 0; }
+.bar { width: 50px; height: 8px; background: #a3e635; border-radius: 5px; overflow: hidden; border: 2px solid #65a30d; }
+.bar-fill { height: 100%; background: #22c55e; transition: width 0.3s; }
+.progres { position: absolute; top: 45px; left: 10px; right: 10px; text-align: center; font-size: 12px; font-weight: bold; }
 .tombol { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px; }
-.btn { background: #38bdf8; color: white; border: none; padding: 15px 5px; border-radius: 15px; font-size: 11px; font-weight: bold; box-shadow: 0 4px 0 #0284c7; cursor: pointer; }
-.btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #0284c7; }
-
-#notif { text-align: center; font-weight: bold; color: #dc2626; height: 20px; margin-top: 5px; }
+.btn { background: #38bdf8; color: white; border: none; padding: 15px 5px; border-radius: 15px; font-size: 11px; font-weight: bold; box-shadow: 0 4px 0 #0284c7; }
+.btn:active { transform: translateY(2px); }
+#notif { text-align: center; font-weight: bold; color: #dc2626; height: 20px; }
 </style>
 </head>
 <body>
@@ -39,11 +36,18 @@ body { background: #c4f1f9; color: #1a2e05; font-family: 'Comic Sans MS', cursiv
 <div class="gotchi">
   <div class="layar">
     <div class="umur" id="umur">Umur: 0 Hari</div>
+    <div class="level" id="level"></div>
+    <div class="progres" id="progres"></div>
     
-    <div class="pet-area" id="pet-area">
+    <div class="pet-area">
       <span class="pet" id="pet">🥚</span>
     </div>
-    <div id="kotoran-area"></div>
+    
+    <!-- BAR XP MUNCUL KALO DEWASA -->
+    <div class="xp-container" id="xp-container" style="display:none;">
+      <div class="xp-text" id="xp-text">EXP: 0/300</div>
+      <div class="xp-bar"><div class="xp-fill" id="xp-fill"></div></div>
+    </div>
     
     <div class="status">
       <div>🍗<div class="bar"><div class="bar-fill" id="lapar-bar"></div></div></div>
@@ -63,11 +67,10 @@ body { background: #c4f1f9; color: #1a2e05; font-family: 'Comic Sans MS', cursiv
 </div>
 
 <script>
-let data = JSON.parse(localStorage.chicken_gotchi || '{"stage":"telur","umur":0,"lapar":100,"bahagia":100,"energi":100,"bersih":100,"kotor":0,"sakit":false,"lastUpdate":Date.now()}');
+let data = JSON.parse(localStorage.chicken_gotchi_v4 || '{"stage":"telur","umur":0,"lvl":1,"xp":0,"pakanCount":0,"targetXp":10,"lapar":100,"bahagia":100,"energi":100,"startTime":Date.now()}');
 
 function save(){
-  data.lastUpdate = Date.now();
-  localStorage.chicken_gotchi = JSON.stringify(data);
+  localStorage.chicken_gotchi_v4 = JSON.stringify(data);
   render();
 }
 
@@ -76,61 +79,73 @@ function render(){
   document.getElementById('bahagia-bar').style.width = data.bahagia + '%';
   document.getElementById('energi-bar').style.width = data.energi + '%';
   
-  let emoji = '🥚'; let classPet = 'pet';
-  if(data.stage === 'bayi') {emoji = '🐤'; classPet='pet'; document.querySelector('.pet').style.fontSize='100px'}
-  if(data.stage === 'remaja') {emoji = '🐥'; document.querySelector('.pet').style.fontSize='100px'}
-  if(data.stage === 'dewasa') {emoji = '🐔'; document.querySelector('.pet').style.fontSize='100px'}
-  if(data.stage === 'raja') {emoji = '👑🐔'; document.querySelector('.pet').style.fontSize='100px'}
-  if(data.sakit) { emoji = '🤒'; classPet += ' sedih'; }
-  if(data.stage === 'mati') {emoji = '💀'; document.querySelector('.pet').style.fontSize='100px'}
+  let emoji = '🥚';
+  if(data.stage === 'bayi') emoji = '🐤';
+  if(data.stage === 'remaja') emoji = '🐥';
+  if(data.stage === 'dewasa') emoji = '🐔';
   
   document.getElementById('pet').innerText = emoji;
-  document.getElementById('pet').className = classPet;
   document.getElementById('umur').innerText = `Umur: ${data.umur} Hari`;
   
-  document.getElementById('kotoran-area').innerHTML = '';
-  for(let i=0; i<data.kotor; i++){
-    let k = document.createElement('div'); k.className = 'kotoran'; k.innerText = '💩';
-    k.style.left = 30 + i*20 + '%'; document.getElementById('kotoran-area').appendChild(k);
+  if(data.stage === 'dewasa'){
+    document.getElementById('level').innerText = `LVL ${data.lvl}`;
+    document.getElementById('progres').innerText = `XP: ${data.xp}/${data.targetXp} Pakan`;
+    
+    // TAMPILIN BAR XP
+    document.getElementById('xp-container').style.display = 'block';
+    document.getElementById('xp-text').innerText = `EXP: ${data.xp}/${data.targetXp}`;
+    let persen = (data.xp / data.targetXp) * 100;
+    document.getElementById('xp-fill').style.width = persen + '%';
+  } else {
+    document.getElementById('level').innerText = '';
+    document.getElementById('progres').innerText = `Progress: ${data.pakanCount}/${data.targetXp} Pakan`;
+    document.getElementById('xp-container').style.display = 'none'; // SEMBUNYIIN KALO BELUM DEWASA
   }
 }
 
-function updateStatus(){
-  let now = Date.now();
-  let diff = (now - data.lastUpdate) / 1000 / 60;
+function cekEvolusi(){
+  let elapsed = (Date.now() - data.startTime) / 1000;
   
-  data.lapar -= diff * 0.5;
-  data.bahagia -= diff * 0.3;
-  data.energi -= diff * 0.2;
-  data.bersih -= diff * 0.1;
-  
-  if(data.lapar < 20 || data.bahagia < 20) data.sakit = true;
-  if(data.lapar <= 0 || data.bahagia <= 0) data.stage = 'mati';
-  
-  if(data.umur > 0 && data.stage === 'telur') data.stage = 'bayi';
-  if(data.umur > 3 && data.stage === 'bayi') data.stage = 'remaja';
-  if(data.umur > 7 && data.stage === 'remaja') data.stage = 'dewasa';
-  if(data.umur > 14 && data.bahagia > 80) data.stage = 'raja';
-  
-  if(Math.random() < 0.05) data.kotor = Math.min(3, data.kotor + 1);
-  if(data.umur > 0 && Math.floor(now/1000/60/60/24) > data.umur) data.umur++;
-  
-  data.lapar = Math.max(0, data.lapar);
-  data.bahagia = Math.max(0, data.bahagia);
-  data.energi = Math.max(0, data.energi);
-  data.bersih = Math.max(0, data.bersih);
-  
-  save();
+  if(data.stage === 'telur' && elapsed > 10){
+    data.stage = 'bayi'; data.targetXp = 50; data.pakanCount = 0;
+    showNotif('🎉 SELAMAT! TELUR NETAS JADI ANAK AYAM!');
+  }
+  else if(data.stage === 'bayi' && data.pakanCount >= 50){
+    data.stage = 'remaja'; data.targetXp = 150; data.pakanCount = 0;
+    showNotif('🎉 NAIK LEVEL! JADI AYAM REMAJA!');
+  }
+  else if(data.stage === 'remaja' && data.pakanCount >= 150){
+    data.stage = 'dewasa'; data.xp = 0; data.targetXp = 200;
+    showNotif('🎉 NAIK LEVEL! JADI AYAM DEWASA LVL 1!');
+  }
+  else if(data.stage === 'dewasa' && data.xp >= data.targetXp){
+    data.lvl++; data.xp = 0; 
+    data.targetXp = 200 + (data.lvl - 1) * 50; // +50 tiap lvl
+    showNotif(`🎉 CONGRATS! NAIK KE LVL ${data.lvl}!`);
+  }
 }
 
-function kasihMakan(){ if(data.stage === 'mati') return; data.lapar = Math.min(100, data.lapar + 30); data.bahagia += 5; showNotif('Nyam nyam! 😋'); save(); }
-function main(){ if(data.stage === 'mati' || data.energi < 10) return; data.bahagia = Math.min(100, data.bahagia + 20); data.energi -= 10; showNotif('Asik main! ❤️'); save(); }
-function bersihin(){ data.kotor = 0; data.bersih = 100; data.bahagia += 10; showNotif('Bersih! ✨'); save(); }
-function tidur(){ if(data.stage === 'mati') return; data.energi = Math.min(100, data.energi + 40); data.bahagia -= 5; showNotif('Zzz... 😴'); save(); }
+function kasihMakan(){
+  if(data.stage === 'mati') return;
+  data.lapar = Math.min(100, data.lapar + 20);
+  data.pakanCount++;
+  if(data.stage === 'dewasa') data.xp++;
+  cekEvolusi();
+  showNotif('+1 Pakan!');
+  save();
+}
+function main(){ if(data.energi < 10) return; data.bahagia = Math.min(100, data.bahagia + 15); data.energi -= 10; showNotif('Asik main!'); save(); }
+function bersihin(){ data.bahagia += 10; showNotif('Bersih!'); save(); }
+function tidur(){ data.energi = Math.min(100, data.energi + 30); showNotif('Zzz...'); save(); }
 function showNotif(teks){ document.getElementById('notif').innerText = teks; setTimeout(()=> document.getElementById('notif').innerText = '', 2000); }
 
-setInterval(updateStatus, 10000);
-render();
+setInterval(()=>{ 
+  let hari = Math.floor((Date.now() - data.startTime) / 1000 / 60 / 60 / 24);
+  if(hari > data.umur) data.umur = hari;
+  save();
+}, 60000);
+
+save();
 </script>
 </body>
 </html>
