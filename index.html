@@ -3,149 +3,163 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Pet Chicken Farm V2.1</title>
+<title>Chicken Gotchi V3.0</title>
 <style>
 * { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
-body { background: #87ceeb; color: #1a2e05; font-family: 'Comic Sans MS', cursive; padding: 10px; margin: 0; }
+body { background: #c4f1f9; color: #1a2e05; font-family: 'Comic Sans MS', cursive; padding: 10px; margin: 0; display: flex; justify-content: center; }
 
-#header { background: white; padding: 15px; border-radius: 20px; margin-bottom: 12px; border: 4px solid #65a30d; font-size: 22px; text-align: center; }
-#koin { font-weight: bold; color: #eab308; font-size: 26px; }
+.gotchi { width: 100%; max-width: 350px; background: #f0f9ff; border: 8px solid #38bdf8; border-radius: 40px; padding: 15px; box-shadow: 0 10px 0 #0284c7; }
 
-.shop { background: white; padding: 15px; border-radius: 20px; margin: 12px 0; border: 4px solid #65a30d; }
-.shop h3 { margin: 0 0 12px 0; text-align: center; }
-.item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f7fee7; border-radius: 12px; margin: 10px 0; }
-.stok { font-weight: bold; color: #65a30d; font-size: 18px; }
+.layar { background: #d9f99d; border: 4px solid #65a30d; border-radius: 20px; padding: 10px; height: 280px; position: relative; overflow: hidden; }
 
-/* KANDANG BESAR PAKAI CSS */
-.kandang-besar { 
-  width: 100%; max-width: 400px; height: 320px; margin: 15px auto; position: relative;
-  background: #d2b48c; /* tanah */
-  border-radius: 20px; border: 6px solid #8b4513; box-shadow: 0 8px 0 #654321;
-  overflow: hidden;
-}
-.pagar { position: absolute; width: 100%; height: 100%; background-image: 
-  linear-gradient(90deg, transparent 45%, #a0522d 45%, #a0522d 55%, transparent 55%),
-  linear-gradient(0deg, transparent 45%, #a0522d 45%, #a0522d 55%, transparent 55%);
-  background-size: 40px 40px; border: 3px dashed white; box-sizing: border-box;
-}
-.palungan { position: absolute; left: 10%; top: 45%; width: 80px; height: 30px; background: #a0522d; border-radius: 10px; cursor: pointer; border: 3px solid #654321; }
-.palungan::after { content: '🌽'; position: absolute; left: 25px; top: -5px; font-size: 20px; }
-.gudang { position: absolute; right: 5%; top: 5%; width: 90px; height: 90px; background: #dc2626; border-radius: 10px; cursor: pointer; border: 4px solid white; display: flex; align-items: center; justify-content: center; font-size: 50px; }
+.status { display: flex; justify-content: space-around; font-size: 12px; margin-bottom: 8px; }
+.bar { width: 60px; height: 8px; background: #ddd; border-radius: 5px; overflow: hidden; }
+.bar-fill { height: 100%; background: #22c55e; transition: width 0.5s; }
 
-/* AYAM */
-.ayam { position: absolute; font-size: 35px; transition: all 1.5s linear; }
-.ayam-anak { animation: jalan 2s ease-in-out infinite alternate; }
-.ayam-dewasa { animation: bob 1.2s ease-in-out infinite; }
-@keyframes jalan { 0%{transform: translateX(-8px);} 100%{transform: translateX(8px);} }
+.pet-area { text-align: center; height: 160px; display: flex; align-items: center; justify-content: center; flex-direction: column; font-size: 70px; }
+.pet { animation: bob 1.5s infinite; }
 @keyframes bob { 0%,100%{transform: translateY(0);} 50%{transform: translateY(-10px);} }
-.telur { position: absolute; font-size: 30px; animation: goyang 0.6s infinite; }
+.pet.sedih { animation: goyang 0.3s infinite; }
 @keyframes goyang { 0%,100%{transform: rotate(-5deg);} 50%{transform: rotate(5deg);} }
 
-.jagung-terbang { position: absolute; font-size: 25px; animation: sebar 1s forwards; pointer-events: none; }
-@keyframes sebar { from{opacity:1; transform: scale(1);} to{opacity:0; transform: translateY(50px) scale(0.5);} }
+.kotoran { position: absolute; font-size: 20px; bottom: 10px; left: 45%; animation: muncul 0.5s; }
+@keyframes muncul { from{opacity:0; transform: scale(0);} to{opacity:1; transform: scale(1);} }
 
-button { background: #65a30d; color: white; border: none; padding: 12px 18px; border-radius: 12px; font-weight: bold; box-shadow: 0 3px 0 #4d7c0f; }
-#notif { position: fixed; top: 25px; left: 50%; transform: translateX(-50%); background: #22c55e; color: white; padding: 12px 25px; border-radius: 15px; display: none; z-index: 100; }
+.tombol { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px; }
+.btn { background: #38bdf8; color: white; border: none; padding: 15px 5px; border-radius: 15px; font-size: 11px; font-weight: bold; box-shadow: 0 4px 0 #0284c7; cursor: pointer; }
+.btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #0284c7; }
+
+#notif { text-align: center; font-weight: bold; color: #dc2626; height: 20px; margin-top: 5px; }
 </style>
 </head>
 <body>
 
-<div id="header">💰 KOIN: <span id="koin">500</span></div>
-
-<div class="shop">
-  <h3>🛒 GUDANG / TOKO</h3>
-  <div class="item"><span>🥚 Telur Ayam</span><span class="stok" id="stok-telur">x0</span><button onclick="beliTelur(100)">BELI 100</button></div>
-  <div class="item"><span>🌽 Pakan Jagung</span><span class="stok" id="stok-jagung">x0</span><button onclick="beliPakan('jagung', 50)">BELI 50</button></div>
-  <div class="item"><span>🌽🌽 Jagung Super</span><span class="stok" id="stok-super">x0</span><button onclick="beliPakan('super', 200)">BELI 200</button></div>
+<div class="gotchi">
+  <div class="layar">
+    <div class="status">
+      <div>🍗<div class="bar"><div class="bar-fill" id="lapar-bar"></div></div></div>
+      <div>❤️<div class="bar"><div class="bar-fill" id="bahagia-bar"></div></div></div>
+      <div>⚡<div class="bar"><div class="bar-fill" id="energi-bar"></div></div></div>
+    </div>
+    
+    <div class="pet-area" id="pet-area">
+      <span class="pet" id="pet">🥚</span>
+      <div id="umur">Umur: 0 hari</div>
+    </div>
+    <div id="kotoran-area"></div>
+  </div>
+  
+  <div id="notif"></div>
+  
+  <div class="tombol">
+    <button class="btn" onclick="kasihMakan()">🍗<br>MAKAN</button>
+    <button class="btn" onclick="main()">⚽<br>MAIN</button>
+    <button class="btn" onclick="bersihin()">🧹<br>BERSIH</button>
+    <button class="btn" onclick="tidur()">💤<br>TIDUR</button>
+  </div>
 </div>
-
-<h3 style="text-align:center;">🏠 KANDANG BESAR</h3>
-<div class="kandang-besar" id="kandang">
-  <div class="pagar"></div>
-  <div class="palungan" onclick="sebarPakan()" title="Klik buat kasih makan"></div>
-  <div class="gudang" onclick="showShop()" title="Buka Gudang">🏠</div>
-</div>
-
-<div id="notif"></div>
 
 <script>
-let koin = +localStorage.farm_koin || 500;
-let inventory = JSON.parse(localStorage.farm_inv || '{"telur":0,"jagung":0,"super":0}');
-let ayamList = JSON.parse(localStorage.farm_ayam || '[]');
-
-const WAKTU_TETAS = 10000;
-const WAKTU_DEWASA = 30000;
+let data = JSON.parse(localStorage.chicken_gotchi || '{"stage":"telur","umur":0,"lapar":100,"bahagia":100,"energi":100,"bersih":100,"kotor":0,"sakit":false,"lastUpdate":Date.now()}');
 
 function save(){
-  localStorage.farm_koin = koin; 
-  localStorage.farm_inv = JSON.stringify(inventory);
-  localStorage.farm_ayam = JSON.stringify(ayamList);
-  document.getElementById('koin').innerText = koin.toLocaleString('id');
-  document.getElementById('stok-telur').innerText = 'x' + inventory.telur;
-  document.getElementById('stok-jagung').innerText = 'x' + inventory.jagung;
-  document.getElementById('stok-super').innerText = 'x' + inventory.super;
-  renderAyam();
+  data.lastUpdate = Date.now();
+  localStorage.chicken_gotchi = JSON.stringify(data);
+  render();
 }
 
-function beliTelur(harga){ if(koin < harga) return showNotif('❌ Koin kurang!'); koin -= harga; inventory.telur++; showNotif('🥚 Telur dibeli!'); taruhTelur(); save(); }
-function beliPakan(jenis, harga){ if(koin < harga) return showNotif('❌ Koin kurang!'); koin -= harga; inventory[jenis]++; showNotif(`🌽 Pakan ${jenis} dibeli!`); save(); }
-function showShop(){ document.querySelector('.shop').scrollIntoView(); }
-
-function taruhTelur(){
-  if(inventory.telur <= 0) return;
-  inventory.telur--;
-  ayamList.push({ x: Math.random()*70 + 15, y: Math.random()*50 + 35, stage: 'telur', start: Date.now(), boost: 1 });
-}
-
-function sebarPakan(){
-  let jenis = inventory.super > 0? 'super' : inventory.jagung > 0? 'jagung' : null;
-  if(!jenis) return showNotif('❌ Pakan Habis! Beli di Toko');
+function render(){
+  // Update bar
+  document.getElementById('lapar-bar').style.width = data.lapar + '%';
+  document.getElementById('bahagia-bar').style.width = data.bahagia + '%';
+  document.getElementById('energi-bar').style.width = data.energi + '%';
   
-  inventory[jenis]--;
-  ayamList.forEach(a => { if(a.stage === 'anak'){ a.boost = jenis === 'super'? 3 : 1; a.start = Date.now(); } });
+  // Evolusi
+  let emoji = '🥚'; let classPet = 'pet';
+  if(data.stage === 'bayi') emoji = '🐤';
+  if(data.stage === 'remaja') emoji = '🐥';
+  if(data.stage === 'dewasa') emoji = '🐔';
+  if(data.stage === 'raja') emoji = '👑🐔';
+  if(data.sakit) { emoji = '🤒'; classPet += ' sedih'; }
+  if(data.stage === 'mati') emoji = '💀';
   
-  let kandang = document.getElementById('kandang');
-  for(let i=0; i<10; i++){
-    let j = document.createElement('div'); j.className = 'jagung-terbang'; j.innerText = '🌽';
-    j.style.left = Math.random()*80 + 10 + '%'; j.style.top = '40%';
-    kandang.appendChild(j); setTimeout(()=>j.remove(), 1000);
+  document.getElementById('pet').innerText = emoji;
+  document.getElementById('pet').className = classPet;
+  document.getElementById('umur').innerText = `Umur: ${data.umur} hari`;
+  
+  // Kotoran
+  document.getElementById('kotoran-area').innerHTML = '';
+  for(let i=0; i<data.kotor; i++){
+    let k = document.createElement('div'); k.className = 'kotoran'; k.innerText = '💩';
+    k.style.left = 30 + i*20 + '%'; document.getElementById('kotoran-area').appendChild(k);
   }
-  showNotif(jenis === 'super'? '✨ Pakan Super disebar!' : '😋 Pakan disebar!');
-  save();
 }
 
-function jualAyam(index){
-  let bonus = ayamList[index].boost === 3? 500 : 200;
-  koin += bonus; ayamList.splice(index, 1);
-  showNotif(`💰 Ayam dijual +${bonus} koin!`);
-  save();
-}
-
-function renderAyam(){
-  let kandang = document.getElementById('kandang');
-  kandang.querySelectorAll('.ayam,.telur').forEach(el => el.remove());
+function updateStatus(){
+  let now = Date.now();
+  let diff = (now - data.lastUpdate) / 1000 / 60; // menit
   
-  ayamList.forEach((a, i) => {
-    let now = Date.now(); let elapsed = now - a.start;
-    if(a.stage === 'telur' && elapsed > WAKTU_TETAS){ a.stage = 'anak'; a.start = now; }
-    else if(a.stage === 'anak' && elapsed > WAKTU_DEWASA / a.boost){ a.stage = 'dewasa'; }
-    
-    let el = document.createElement('div');
-    el.style.left = a.x + '%'; el.style.top = a.y + '%';
-    
-    if(a.stage === 'telur'){
-      el.className = 'telur'; el.innerText = '🥚';
-    } else {
-      el.className = 'ayam ' + (a.stage === 'anak'? 'ayam-anak' : 'ayam-dewasa');
-      el.innerText = a.stage === 'anak'? '🐤' : '🐔';
-      if(a.stage === 'dewasa') el.onclick = () => jualAyam(i);
-    }
-    kandang.appendChild(el);
-  });
+  data.lapar -= diff * 0.5;
+  data.bahagia -= diff * 0.3;
+  data.energi -= diff * 0.2;
+  data.bersih -= diff * 0.1;
+  
+  if(data.lapar < 20 || data.bahagia < 20) data.sakit = true;
+  if(data.lapar <= 0 || data.bahagia <= 0) data.stage = 'mati';
+  
+  if(data.umur > 1 && data.stage === 'telur') data.stage = 'bayi';
+  if(data.umur > 3 && data.stage === 'bayi') data.stage = 'remaja';
+  if(data.umur > 7 && data.stage === 'remaja') data.stage = 'dewasa';
+  if(data.umur > 14 && data.bahagia > 80) data.stage = 'raja';
+  
+  if(Math.random() < 0.05) data.kotor = Math.min(3, data.kotor + 1);
+  if(data.umur > 0 && Math.floor(now/1000/60/60/24) > data.umur) data.umur++;
+  
+  data.lapar = Math.max(0, data.lapar);
+  data.bahagia = Math.max(0, data.bahagia);
+  data.energi = Math.max(0, data.energi);
+  data.bersih = Math.max(0, data.bersih);
+  
+  save();
 }
 
-function showNotif(teks){ let n = document.getElementById('notif'); n.innerText = teks; n.style.display = 'block'; setTimeout(()=> n.style.display = 'none', 1800); }
-setInterval(save, 1000); save();
+function kasihMakan(){
+  if(data.stage === 'mati') return;
+  data.lapar = Math.min(100, data.lapar + 30);
+  data.bahagia += 5;
+  showNotif('Nyam nyam! 😋');
+  save();
+}
+function main(){
+  if(data.stage === 'mati' || data.energi < 10) return;
+  data.bahagia = Math.min(100, data.bahagia + 20);
+  data.energi -= 10;
+  showNotif('Asik main! ❤️');
+  save();
+}
+function bersihin(){
+  data.kotor = 0;
+  data.bersih = 100;
+  data.bahagia += 10;
+  showNotif('Bersih! ✨');
+  save();
+}
+function tidur(){
+  if(data.stage === 'mati') return;
+  data.energi = Math.min(100, data.energi + 40);
+  data.bahagia -= 5;
+  showNotif('Zzz... 😴');
+  save();
+}
+
+function showNotif(teks){
+  document.getElementById('notif').innerText = teks;
+  setTimeout(()=> document.getElementById('notif').innerText = '', 2000);
+}
+
+// Auto update tiap 10 detik
+setInterval(updateStatus, 10000);
+render();
 </script>
 </body>
 </html>
