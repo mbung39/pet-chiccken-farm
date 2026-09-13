@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Chicken Gotchi V4.9</title>
+<title>Chicken Gotchi V5.0</title>
 <style>
 * { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
 body { background: #c4f1f9; color: #1a2e05; font-family: 'Comic Sans MS', cursive; padding: 10px; margin: 0; display: flex; justify-content: center; }
@@ -23,14 +23,30 @@ body { background: #c4f1f9; color: #1a2e05; font-family: 'Comic Sans MS', cursiv
   background: transparent;
   pointer-events: none;
 }
-.pet-area { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+.pet-area { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: center; }
 .pet { 
-  width: 90px;
-  height: 90px;
-  position: absolute; 
-  transition: all 0.8s ease-in-out;
-  filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+  width: 100px;
+  height: 100px;
+  position: relative;
+  transition: transform 0.3s;
 }
+
+/* ANIMASI */
+@keyframes idle { 0%,100%{transform: translateY(0);} 50%{transform: translateY(-3px);} }
+@keyframes walk { 0%,100%{transform: translateY(0) rotate(0deg);} 25%{transform: translateY(-5px) rotate(-2deg);} 75%{transform: translateY(-5px) rotate(2deg);} }
+@keyframes eat { 0%,100%{transform: translateY(0);} 50%{transform: translateY(8px);} }
+@keyframes play { 0%,100%{transform: translateY(0) rotate(0deg);} 50%{transform: translateY(-15px) rotate(360deg);} }
+@keyframes sleep { 0%,100%{opacity:1;} 50%{opacity:0.7;} }
+@keyframes wing { 0%,100%{transform: rotate(0deg);} 50%{transform: rotate(20deg);} }
+
+.idle-anim { animation: idle 2s infinite; }
+.walk-anim { animation: walk 0.5s infinite; }
+.eat-anim { animation: eat 0.3s 3; }
+.play-anim { animation: play 0.6s 2; }
+.sleep-anim { animation: sleep 2s infinite; }
+
+.wing { transform-origin: bottom; }
+.wing-anim { animation: wing 0.3s infinite; }
 
 .xp-container { margin-top: 8px; }
 .xp-text { font-size: 12px; text-align: center; font-weight: bold; color: #a16207; }
@@ -61,7 +77,7 @@ body { background: #c4f1f9; color: #1a2e05; font-family: 'Comic Sans MS', cursiv
     
     <div class="kandang">
       <div class="pet-area">
-        <div class="pet" id="pet"></div>
+        <div class="pet idle-anim" id="pet"></div>
       </div>
     </div>
     
@@ -90,21 +106,84 @@ body { background: #c4f1f9; color: #1a2e05; font-family: 'Comic Sans MS', cursiv
 <script>
 if(!localStorage.chicken_gotchi_v4){
   localStorage.chicken_gotchi_v4 = JSON.stringify({
-    stage:"telur","umur":0,"lvl":1,"xp":0,"pakanCount":0,"targetXp":20, // DITURUNIN JADI 20
-    "lapar":100,"bahagia":100,"energi":100,"startTime":Date.now(),"posX":50,"posY":60,"evolusi":0
+    stage:"telur","umur":0,"lvl":1,"xp":0,"pakanCount":0,"targetXp":20,
+    "lapar":100,"bahagia":100,"energi":100,"startTime":Date.now()
   });
 }
 
 let data = JSON.parse(localStorage.chicken_gotchi_v4);
 
 const ayamSVG = {
-  telur: `<svg viewBox="0 0 100 100"><ellipse cx="50" cy="55" rx="35" ry="45" fill="#fff8dc" stroke="#ddd" stroke-width="3"/></svg>`,
-  bayi: `<svg viewBox="0 0 100 100"><circle cx="50" cy="60" r="30" fill="#ffff99"/><circle cx="40" cy="50" r="5" fill="black"/><circle cx="60" cy="50" r="5" fill="black"/><path d="M48 55 L52 55 L50 60 Z" fill="orange"/></svg>`,
-  remaja: `<svg viewBox="0 0 100 100"><circle cx="50" cy="60" r="28" fill="#fffacd"/><circle cx="50" cy="35" r="20" fill="#fffacd"/><path d="M45 25 L50 15 L55 25" fill="red"/><circle cx="45" cy="32" r="3" fill="black"/><circle cx="55" cy="32" r="3" fill="black"/><path d="M50 37 L53 37 L51.5 40 Z" fill="orange"/></svg>`,
-  dewasa1: `<svg viewBox="0 0 100 100"><circle cx="50" cy="65" r="30" fill="white"/><circle cx="50" cy="35" r="22" fill="white"/><path d="M45 20 L50 5 L55 20" fill="red"/><circle cx="43" cy="30" r="4" fill="black"/><circle cx="57" cy="30" r="4" fill="black"/><path d="M48 35 L52 35 L50 40 Z" fill="orange"/></svg>`,
-  dewasa2: `<svg viewBox="0 0 100 100"><circle cx="50" cy="65" r="32" fill="#f0f0f0"/><circle cx="50" cy="35" r="24" fill="#f0f0f0"/><path d="M42 18 L50 3 L58 18" fill="#dc2626"/><circle cx="42" cy="28" r="4" fill="black"/><circle cx="58" cy="28" r="4" fill="black"/><path d="M46 33 L54 33 L50 38 Z" fill="#ea580c"/><text x="50" y="75" font-size="8" text-anchor="middle" fill="#dc2626">💪</text></svg>`,
-  dewasa3: `<svg viewBox="0 0 100 100"><circle cx="50" cy="65" r="34" fill="#fffacd"/><circle cx="50" cy="33" r="26" fill="#fffacd"/><path d="M35 15 L40 5 L45 15 L50 0 L55 15 L60 5 L65 15" fill="gold"/><circle cx="40" cy="26" r="4" fill="black"/><circle cx="60" cy="26" r="4" fill="black"/><path d="M44 32 L56 32 L50 37 Z" fill="#ea580c"/><rect x="30" y="70" width="40" height="15" fill="purple" opacity="0.7"/></svg>`,
-  dewasa4: `<svg viewBox="0 0 100 100"><circle cx="50" cy="65" r="35" fill="#1f2937"/><circle cx="50" cy="32" r="27" fill="#1f2937"/><path d="M32 12 L38 2 L44 12 L50 -2 L56 12 L62 2 L68 12" fill="#dc2626"/><circle cx="38" cy="25" r="5" fill="red"/><circle cx="62" cy="25" r="5" fill="red"/><path d="M42 30 L58 30 L50 36 Z" fill="#f97316"/></svg>`
+  telur: `<svg viewBox="0 0 100 100"><ellipse cx="50" cy="55" rx="35" ry="45" fill="#fff8dc" stroke="#ddd" stroke-width="3"/><path d="M45 40 Q50 35 55 40" stroke="#ccc" stroke-width="2" fill="none"/></svg>`,
+  
+  bayi: `<svg viewBox="0 0 100 100">
+    <circle cx="50" cy="65" r="28" fill="#FFD700"/>
+    <circle cx="50" cy="40" r="20" fill="#FFD700"/>
+    <ellipse class="wing" cx="30" cy="60" rx="12" ry="18" fill="#FFC700"/>
+    <ellipse class="wing" cx="70" cy="60" rx="12" ry="18" fill="#FFC700"/>
+    <circle cx="42" cy="35" r="4" fill="black"/>
+    <circle cx="58" cy="35" r="4" fill="black"/>
+    <path d="M48 42 L52 42 L50 46 Z" fill="orange"/>
+  </svg>`,
+  
+  remaja: `<svg viewBox="0 0 100 100">
+    <circle cx="50" cy="65" r="30" fill="#FFF8DC"/>
+    <circle cx="50" cy="38" r="22" fill="#FFF8DC"/>
+    <path d="M45 25 L50 15 L55 25" fill="#DC2626"/>
+    <ellipse class="wing" cx="28" cy="60" rx="14" ry="20" fill="#F0E68C"/>
+    <ellipse class="wing" cx="72" cy="60" rx="14" ry="20" fill="#F0E68C"/>
+    <circle cx="42" cy="33" r="4" fill="black"/>
+    <circle cx="58" cy="33" r="4" fill="black"/>
+    <path d="M48 40 L52 40 L50 44 Z" fill="orange"/>
+  </svg>`,
+  
+  dewasa1: `<svg viewBox="0 0 100 100">
+    <ellipse cx="50" cy="70" r="32" ry="28" fill="white"/>
+    <circle cx="50" cy="40" r="24" fill="white"/>
+    <path d="M44 22 L50 8 L56 22" fill="#DC2626"/>
+    <ellipse class="wing" cx="25" cy="65" rx="16" ry="22" fill="#F5F5F5"/>
+    <ellipse class="wing" cx="75" cy="65" rx="16" ry="22" fill="#F5F5F5"/>
+    <path d="M20 75 Q30 60 40 75" fill="white"/>
+    <circle cx="42" cy="35" r="5" fill="black"/>
+    <circle cx="58" cy="35" r="5" fill="black"/>
+    <path d="M47 43 L53 43 L50 48 Z" fill="orange"/>
+  </svg>`,
+  
+  dewasa2: `<svg viewBox="0 0 100 100">
+    <ellipse cx="50" cy="70" r="34" ry="30" fill="#F0F0F0"/>
+    <circle cx="50" cy="38" r="26" fill="#F0F0F0"/>
+    <path d="M40 18 L50 3 L60 18" fill="#B91C1C"/>
+    <ellipse class="wing" cx="22" cy="65" rx="18" ry="24" fill="#E5E5E5"/>
+    <ellipse class="wing" cx="78" cy="65" rx="18" ry="24" fill="#E5E5E5"/>
+    <path d="M15 75 Q30 55 45 75" fill="#B91C1C"/>
+    <circle cx="40" cy="32" r="5" fill="black"/>
+    <circle cx="60" cy="32" r="5" fill="black"/>
+    <path d="M46 41 L54 41 L50 46 Z" fill="#EA580C"/>
+    <text x="50" y="85" font-size="10" text-anchor="middle">💪</text>
+  </svg>`,
+  
+  dewasa3: `<svg viewBox="0 0 100 100">
+    <ellipse cx="50" cy="70" r="35" ry="31" fill="#FFFACD"/>
+    <circle cx="50" cy="36" r="27" fill="#FFFACD"/>
+    <path d="M32 12 L38 2 L44 12 L50 -2 L56 12 L62 2 L68 12" fill="gold"/>
+    <ellipse class="wing" cx="20" cy="65" rx="19" ry="25" fill="#FAFAD2"/>
+    <ellipse class="wing" cx="80" cy="65" rx="19" ry="25" fill="#FAFAD2"/>
+    <path d="M10 75 Q30 50 50 75" fill="gold"/>
+    <circle cx="38" cy="30" r="5" fill="black"/>
+    <circle cx="62" cy="30" r="5" fill="black"/>
+    <rect x="28" y="85" width="44" height="12" fill="purple" opacity="0.6"/>
+  </svg>`,
+  
+  dewasa4: `<svg viewBox="0 0 100 100">
+    <ellipse cx="50" cy="70" r="36" ry="32" fill="#1F2937"/>
+    <circle cx="50" cy="34" r="28" fill="#1F2937"/>
+    <path d="M30 10 L36 0 L42 10 L50 -5 L58 10 L64 0 L70 10" fill="#DC2626"/>
+    <ellipse class="wing" cx="18" cy="65" rx="20" ry="26" fill="#374151"/>
+    <ellipse class="wing" cx="82" cy="65" rx="20" ry="26" fill="#374151"/>
+    <path d="M5 75 Q30 45 55 75" fill="#DC2626" opacity="0.7"/>
+    <circle cx="36" cy="28" r="6" fill="red"/>
+    <circle cx="64" cy="28" r="6" fill="red"/>
+  </svg>`
 };
 
 function save(){
@@ -119,6 +198,11 @@ function getDewasaSVG(){
   return ayamSVG.dewasa1;
 }
 
+function setAnimasi(nama){
+  let pet = document.getElementById('pet');
+  pet.className = 'pet ' + nama;
+}
+
 function render(){
   document.getElementById('lapar-bar').style.width = data.lapar + '%';
   document.getElementById('bahagia-bar').style.width = data.bahagia + '%';
@@ -129,13 +213,10 @@ function render(){
   if(data.stage === 'remaja') svg = ayamSVG.remaja;
   if(data.stage === 'dewasa') svg = getDewasaSVG();
   
-  let petEl = document.getElementById('pet');
-  petEl.innerHTML = svg;
-  petEl.style.left = data.posX + '%';
-  petEl.style.top = data.posY + '%';
+  document.getElementById('pet').innerHTML = svg;
   
   let scale = 1 + Math.floor(data.lvl / 10) * 0.2;
-  petEl.style.transform = `scale(${scale})`;
+  document.getElementById('pet').style.transform = `scale(${scale})`;
   
   document.getElementById('umur').innerText = `Umur: ${data.umur} Hari`;
   
@@ -160,15 +241,6 @@ function render(){
   }
 }
 
-function jalanAcak(){
-  if(data.stage !== 'telur'){
-    data.posX += (Math.random() - 0.5) * 30;
-    data.posY += (Math.random() - 0.5) * 20;
-    data.posX = Math.max(15, Math.min(85, data.posX));
-    data.posY = Math.max(10, Math.min(75, data.posY));
-  }
-}
-
 function tambahXP(jumlah){
   if(data.stage === 'dewasa'){
     data.xp += jumlah;
@@ -179,7 +251,7 @@ function tambahXP(jumlah){
 function cekLevelUp(){
   if(data.xp >= data.targetXp){
     data.lvl++; data.xp = 0; 
-    data.targetXp = 20 + (data.lvl - 1) * 15; // NAIKNYA LEBIH PELAN: +15 per lvl
+    data.targetXp = 20 + (data.lvl - 1) * 15;
     
     if(data.lvl % 10 === 0){
       document.getElementById('pet').classList.add('evo-flash');
@@ -198,11 +270,11 @@ function cekEvolusi(){
     data.stage = 'bayi'; data.targetXp = 15; data.pakanCount = 0;
     showNotif('🎉 SELAMAT! TELUR NETAS JADI ANAK AYAM!');
   }
-  else if(data.stage === 'bayi' && data.pakanCount >= 20){ // DITURUNIN
+  else if(data.stage === 'bayi' && data.pakanCount >= 20){
     data.stage = 'remaja'; data.targetXp = 20; data.pakanCount = 0;
     showNotif('🎉 NAIK LEVEL! JADI AYAM REMAJA!');
   }
-  else if(data.stage === 'remaja' && data.pakanCount >= 20){ // DITURUNIN
+  else if(data.stage === 'remaja' && data.pakanCount >= 20){
     data.stage = 'dewasa'; data.xp = 0; data.targetXp = 20;
     showNotif('🎉 NAIK LEVEL! JADI AYAM DEWASA LVL 1!');
   }
@@ -210,41 +282,52 @@ function cekEvolusi(){
 
 function kasihMakan(){
   if(data.stage === 'mati') return;
+  setAnimasi('eat-anim');
+  setTimeout(()=> setAnimasi('idle-anim'), 1000);
   data.lapar = Math.min(100, data.lapar + 20);
   data.pakanCount++;
-  tambahXP(3); // PAKAN = 3 EXP
-  jalanAcak();
+  tambahXP(3);
   cekEvolusi();
   showNotif('+3 EXP!');
   save();
 }
 function main(){ 
   if(data.energi < 10) return; 
+  setAnimasi('play-anim');
+  setTimeout(()=> setAnimasi('idle-anim'), 1200);
   data.bahagia = Math.min(100, data.bahagia + 15); 
   data.energi -= 10; 
-  tambahXP(2); // MAIN = 2 EXP
-  jalanAcak(); 
+  tambahXP(2);
   showNotif('+2 EXP!'); 
   save(); 
 }
 function bersihin(){ 
+  setAnimasi('walk-anim');
+  setTimeout(()=> setAnimasi('idle-anim'), 2000);
   data.bahagia += 10; 
-  tambahXP(1); // BERSIH = 1 EXP
-  jalanAcak(); 
+  tambahXP(1);
   showNotif('+1 EXP!'); 
   save(); 
 }
 function tidur(){ 
+  setAnimasi('sleep-anim');
   data.energi = Math.min(100, data.energi + 30); 
-  tambahXP(1); // TIDUR = 1 EXP
-  showNotif('+1 EXP!'); 
+  tambahXP(1);
+  showNotif('Zzz +1 EXP'); 
   save(); 
 }
 function showNotif(teks){ document.getElementById('notif').innerText = teks; setTimeout(()=> document.getElementById('notif').innerText = '', 2000); }
 
+// IDLE RANDOM
+setInterval(()=>{
+  if(Math.random() > 0.7 && data.stage !== 'telur'){
+    document.querySelectorAll('.wing').forEach(w => w.classList.add('wing-anim'));
+    setTimeout(()=> document.querySelectorAll('.wing').forEach(w => w.classList.remove('wing-anim')), 600);
+  }
+}, 3000);
+
 setInterval(()=>{ 
   cekEvolusi();
-  jalanAcak();
   let hari = Math.floor((Date.now() - data.startTime) / 1000 / 60 / 60 / 24);
   if(hari > data.umur) data.umur = hari;
   save();
