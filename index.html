@@ -517,7 +517,7 @@ function kirimKeAdmin(){
   formData.append('tgl', dataStrukTerakhir.tgl);
   formData.append('jam', dataStrukTerakhir.jam);
 
-  fetch('/api/kirim', { method: 'POST', body: formData })
+  fetch('/api/kirim.js', { method: 'POST', body: formData })
   .then(res => res.json())
   .then(res => {
     if(res.status == true){
