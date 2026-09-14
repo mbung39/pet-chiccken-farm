@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     const { nama, wa, menu, harga, tgl, jam } = body;
     
     const token = "8BrJG3zsBmCxwcqLAa9J";
-    const target_grup = "6285143890586.whatsapp.net";
+    const target_grup = "6285143890586@s.whatsapp.net";
 
     const message = `🎉 *PENUKARAN BARU KENPOP* 🎉\n\n👤 Nama: ${nama}\n📱 WA: ${wa}\n🎁 Menu: ${menu}\n💎 Harga: ${Number(harga).toLocaleString('id')} Koin\n📅 ${tgl} ${jam}`;
 
