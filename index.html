@@ -1,541 +1,252 @@
-<!DOCTYPE html>
-<html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>KenPOP Tap - Main & Tuker Makanan Gratis!</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💸 MONEY TAP SULTAN 💸</title>
 
-<meta property="og:title" content="KENPOP TAP 🍗 Main & Tuker Makanan Gratis!" />
-<meta property="og:description" content="Tap ayam kumpulin koin. Tuker jadi KenPOP & Kentang beneran di kasir!" />
-<meta property="og:image" content="https://gameekenpop.vercel.app/kenpop.png" />
-<meta property="og:image:width" content="220" />
-<meta property="og:image:height" content="220" />
-<meta property="og:url" content="https://gameekenpop.vercel.app/" />
-<meta property="og:type" content="website" />
-<meta name="twitter:card" content="summary_large_image">
-</head>
+<script type="module">
+  // 1. IMPORT FIREBASE
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // 2. CONFIG PUNYA LU
+  const firebaseConfig = {
+    apiKey: "AIzaSyC0nYhsMgueVA_91JWw-m8pXWRIZiizzG4",
+    authDomain: "tapkoin-sultan.firebaseapp.com",
+    projectId: "tapkoin-sultan",
+    storageBucket: "tapkoin-sultan.firebasestorage.app",
+    messagingSenderId: "520240440983",
+    appId: "1:520240440983:web:92549e6ee3beb156bcebd2",
+    measurementId: "G-K1BCH7T45J"
+  };
+
+  // 3. INIT FIREBASE
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // 4. FUNGSI GLOBAL BUAT SIMPAN & AMBIL DATA
+  window.simpanKeFirebase = async function(userId, jumlahKoin) {
+    try {
+      await setDoc(doc(db, "players", userId), {
+        koin: jumlahKoin,
+        lastUpdate: new Date()
+      });
+      console.log("✅ Tersimpan ke Firebase:", jumlahKoin)
+    } catch(e) {
+      console.log("❌ Gagal simpan:", e)
+    }
+  }
+
+  window.ambilDariFirebase = async function(userId) {
+    try {
+      const docSnap = await getDoc(doc(db, "players", userId));
+      if (docSnap.exists()) {
+        return docSnap.data().koin;
+      }
+      return 0;
+    } catch(e) {
+      console.log("❌ Gagal ambil:", e)
+      return 0;
+    }
+  }
+</script>
+
 <style>
-    * { -webkit-tap-highlight-color: rgba(0,0,0,0); -webkit-user-select: none; user-select: none; outline: none; }
-  body { background: #0f172a; color: white; text-align: center; font-family: sans-serif; padding: 20px; margin: 0; padding-bottom: 120px; }
-  #stats { font-size: 36px; font-weight: bold; margin-bottom: 20px; }
-  #logo { width: 220px; height: 220px; background: url('kenpop.png') no-repeat center; background-size: contain; border: none; margin: 20px auto; display: block; transition: transform 0.1s; cursor: pointer; }
-  #logo:active { transform: scale(0.88); }
-.shop { background: #1e293b; padding: 15px; border-radius: 15px; margin: 15px 0; }
-.item { display: flex; justify-content: space-between; align-items: center; background: #334155; padding: 12px; border-radius: 10px; margin: 8px 0; }
-.item span small { font-size: 12px; color: #94a3b8; }
-  button { background: gold; color: black; border: none; padding: 10px 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
-  button:disabled { background: gray; cursor: not-allowed; }
-.tukar-group { display:flex; gap:10px; margin-top:10px; }
-.tukar { background: #22c55e; color: white; width: 50%; }
-.tukar-history { background: #3b82f6; color: white; width: 50%; }
-  #float { position: absolute; color: gold; font-size: 26px; font-weight: 900; animation: float 0.8s forwards; pointer-events: none; }
-  @keyframes float { from {opacity:1; transform: translateY(0);} to {opacity:0; transform: translateY(-50px);} }
-  #bannerBox { width: 100%; min-height: 60px; background: #1e293b; border: 3px solid #fb923c; border-radius: 15px; margin: 15px 0; display: flex; justify-content: center; align-items: center; overflow: hidden; padding: 5px 0; }
-  
-.ads-bottom-wrap { display: flex; gap: 10px; justify-content: center; margin: 15px 0; }
-.ads-bottom-box { width: 160px; height: 300px; background: #1e293b; border: 3px solid #fb923c; border-radius: 15px; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-
-.login-box { background: #1e293b; padding: 20px; border-radius: 15px; margin: 15px 0; border: 2px solid #00ff88; }
-.login-box input { width:100%; padding:12px; background:#334155; border:1px solid #475569; border-radius:8px; color:white; font-size:16px; margin-bottom:10px; }
-.btn-login { width:100%; padding:15px; background: #00ff88; color:#000; border:none; border-radius:8px; font-size:18px; font-weight:bold; cursor:pointer; }
-.btn-admin { width:100%; padding:12px; background: #25D366; color:#000; border:none; border-radius:8px; font-size:14px; font-weight:bold; cursor:pointer; margin-top:8px; }
-.welcome { display:none; background:#334155; padding:15px; border-radius:10px; margin: 15px 0; border:1px dashed #00ff88; }
-.btn-logout{ width:100%; padding:12px; background: linear-gradient(45deg, #e74c3c, #c0392b); color:white; border:none; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer; margin-top:10px; }
-.btn-logout:hover{ background: linear-gradient(45deg, #c0392b, #a93226); }
-.btn-reset-admin{ width:100%; padding:12px; background: linear-gradient(45deg, #ef4444, #dc2626); color:white; border:none; border-radius:8px; font-size:14px; font-weight:bold; cursor:pointer; margin-top:5px; }
-.popup { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:999; justify-content:center; align-items:center; }
-.popup-box { background:#1e293b; padding:20px; border-radius:15px; width:90%; max-width:400px; border:2px solid gold; max-height:80vh; overflow-y:auto; }
-.popup-item { background:#334155; padding:12px; border-radius:10px; margin:10px 0; display:flex; justify-content:space-between; align-items:center; }
-.btn-tukar-popup { background:#22c55e; color:white; padding:8px 12px; }
-.btn-tutup { background:#ef4444; color:white; width:100%; margin-top:15px; }
-.struk { text-align:left; background:#0f172a; padding:15px; border-radius:10px; border:1px dashed #22c55e; }
-.history-item { background:#334155; padding:10px; border-radius:8px; margin:8px 0; text-align:left; font-size:14px; }
-.btn-lihat { background:#3b82f6; padding:5px 10px; font-size:12px; }
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none;}
+body{
+  background:linear-gradient(135deg, #001a00 0%, #003300 100%);
+  color:white; text-align:center; font-family:Arial;
+  margin:0; padding:15px; overflow-x:hidden;
+}
+h1{color:gold; text-shadow:0 0 10px gold; margin:5px; font-size:20px;}
+#koin{
+  font-size:28px; background:#000; padding:10px 20px;
+  border:3px solid gold; border-radius:20px;
+  display:inline-block; margin:10px; color:gold;
+  box-shadow:0 0 20px gold; z-index:10; position:relative;
+}
+#tap{
+  width:170px; height:170px;
+  background:#000;
+  border-radius:50%;
+  border:7px solid gold;
+  font-size:70px; margin:15px;
+  box-shadow: 0 0 40px gold, inset 0 0 25px rgba(255,215,0,0.3);
+  position:relative; z-index:10;
+  transition: all 0.2s;
+}
+#tap:active{transform:scale(0.88);}
+#tap.auto{box-shadow: 0 0 50px lime, inset 0 0 25px rgba(0,255,0,0.3); border-color:lime;}
+.btn-group{display:flex; justify-content:center; gap:10px; margin:10px 0; z-index:10; position:relative;}
+.btn-menu{flex:1; max-width:160px; padding:12px 10px; background:gold; color:#000; border:0; border-radius:12px; font-weight:bold; font-size:14px;}
+.popup{display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:99; justify-content:center; align-items:center;}
+.box{background:#001a00; border:3px solid gold; padding:20px; width:90%; max-width:400px; border-radius:15px;}
+.item{display:flex; justify-content:space-between; align-items:center; background:#000; padding:12px; margin:8px 0; border-radius:8px; border:1px solid gold; font-size:14px;}
+.btn-tukar{background:gold; color:#000; border:0; padding:8px 12px; border-radius:8px; font-weight:bold; font-size:12px;}
+.iklan-box{width:100%; max-width:320px; height:100px; background:#000; border:2px dashed gold; border-radius:10px; margin:15px auto 10px; display:flex; justify-content:center; align-items:center; color:gold; font-size:12px; z-index:10; position:relative;}
+.iklan-box2{width:100%; max-width:360px; height:50px; background:#000; border:2px dashed lime; border-radius:10px; margin:10px auto 15px; display:flex; justify-content:center; align-items:center; color:lime; font-size:11px; z-index:10; position:relative;}
+#btnAuto{width:90%; max-width:320px; padding:16px; font-size:17px; font-weight:bold; border:0; border-radius:12px; background:linear-gradient(45deg, #00ff00, #00aa00); color:#000; animation: kedip 1.5s infinite; z-index:10; position:relative;}
+#btnAuto.aktif{background:#002200; color:lime; animation:none; border:2px solid lime; box-shadow:0 0 15px lime;}
+.money{position:fixed; font-size:26px; animation:muncrat 0.8s; pointer-events:none; z-index:999;}
+@keyframes muncrat{0%{opacity:1; transform:scale(0.5) rotate(0deg);} 100%{opacity:0; transform:translateY(-120px) scale(1.4) rotate(360deg);}}
+.uang-terbang{position:fixed; font-size:28px; bottom:-60px; animation: naikTurun 4s ease-in-out infinite; pointer-events:none; z-index:1; filter: drop-shadow(0 0 10px gold); opacity:0.6;}
+@keyframes naikTurun {0% { transform: translateY(0) rotate(0deg); opacity:0; } 15% { opacity:0.7; } 50% { transform: translateY(-300px) rotate(180deg); } 85% { opacity:0.7; } 100% { transform: translateY(-600px) rotate(360deg); opacity:0; }}
+@keyframes kedip{0%,100%{opacity:1;} 50%{opacity:0.7;}}
 </style>
 </head>
 <body>
 
-<div class="login-box" id="loginBox">
-  <h2>👋 SELAMAT DATANG DI TAP-TAP KENPOP</h2>
-  <input type="text" id="nama" placeholder="Nama Kamu" required>
-  <input type="tel" id="wa" placeholder="No. WhatsApp 08xxxx" required>
-  <button class="btn-login" onclick="login()">MASUK GAME</button>
-  <button class="btn-admin" onclick="hubungiAdmin()">💬 BUTUH BANTUAN ADMIN?</button>
+<div class="uang-terbang" style="left:10%; animation-delay:0s;">💸</div>
+<div class="uang-terbang" style="left:25%; animation-delay:1s;">💵</div>
+<div class="uang-terbang" style="left:40%; animation-delay:2s;">🪙</div>
+<div class="uang-terbang" style="left:60%; animation-delay:0.5s;">💸</div>
+<div class="uang-terbang" style="left:75%; animation-delay:1.5s;">💵</div>
+<div class="uang-terbang" style="left:90%; animation-delay:2.5s;">🪙</div>
+
+<h1>💸 MONEY TAP SULTAN 💸</h1>
+<div id="koin">KOIIN: 0</div><br>
+<button id="tap">💰</button><br>
+
+<div class="btn-group">
+  <button class="btn-menu" onclick="show('tukar')">TUKAR SALDO</button>
+  <button class="btn-menu" onclick="show('riwayat')">RIWAYAT</button>
 </div>
 
-<div class="welcome" id="welcomeBox">
-  <h3>Halo <span id="w-nama"></span>!</h3>
-  <p>WA: <span id="w-wa"></span></p>
-  <button class="btn-logout" onclick="logout()">LOGOUT</button>
-  <button class="btn-reset-admin" onclick="resetAdmin()">🔑 RESET AKUN CHAT ADMIN</button>
-</div>
+<div class="iklan-box">TEMPAT IKLAN 320x100</div>
+<button id="btnAuto" onclick="mulaiAuto()">AKTIFKAN AUTO KLIK 1 JAM</button>
+<div class="iklan-box2">TEMPAT IKLAN 360x50</div>
 
-<div id="stats">Koin: <span id="coins">0</span></div>
-<button id="logo"></button>
+<div id="tukar" class="popup" onclick="hide('tukar')"><div class="box" onclick="event.stopPropagation()"><h2>💸 TUKAR SALDO 💸</h2>
+<div class="item">DANA 5.000 <small>500.000 koin</small> <button class="btn-tukar" onclick="tukar('DANA 5000',500000)">TUKAR</button></div>
+<div class="item">GOPAY 10.000 <small>1.000.000 koin</small> <button class="btn-tukar" onclick="tukar('GOPAY 10000',1000000)">TUKAR</button></div>
+<div class="item">DANA 20.000 <small>2.000.000 koin</small> <button class="btn-tukar" onclick="tukar('DANA 20000',2000000)">TUKAR</button></div>
+<button class="btn-menu" style="background:#555; color:#fff; max-width:100%;" onclick="hide('tukar')">TUTUP</button></div></div>
 
-<div id="bannerBox">
-<script type="text/javascript">atOptions = { 'key' : 'c68d59594618ef2d0218af656ac91b4c', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };</script>
-<script type="text/javascript" src="//www.highrevenueformat.com/c68d59594618ef2d0218af656ac91b4c/invoke.js"></script>
-</div>
+<div id="riwayat" class="popup" onclick="hide('riwayat')"><div class="box" onclick="event.stopPropagation()"><h2>📜 RIWAYAT WD</h2><div id="list" style="max-height:200px; overflow-y:auto; text-align:left;"></div><button class="btn-menu" style="background:#555; color:#fff; max-width:100%;" onclick="hide('riwayat')">TUTUP</button></div></div>
 
-<script type='text/javascript' src='//pl31304625.profitableratecpmnetwork.com/70/3c/2a/703c2a82d8b893a48665901b0057ef58.js'></script>
-
-<div class="shop">
-  <h2>🛒 SHOP</h2>
-  <div class="item">
-    <span>Klik +1<br><small>Total = +<span id="powerNow">1</span></small></span>
-    <button id="btnPower">Validasi 0/3</button>
-  </div>
-  <div class="item">
-    <span>Auto Click 1 Jam</span>
-    <button id="btnAuto">Validasi 0/6</button>
-  </div>
-  <div class="tukar-group">
-    <button class="tukar" onclick="bukaPopupTukar()">🍗 TUKAR KOIN</button>
-    <button class="tukar-history" onclick="bukaPopupHistory()">📜 HISTORY</button>
-  </div>
-</div>
-
-<div class="ads-bottom-wrap">
-  <div class="ads-bottom-box" id="monetag-kiri">
-    <script async data-cfasync="false" src="//nap5k.com/tag.min.js" data-zone="11790593"></script>
-  </div>
-  <div class="ads-bottom-box">
-    <script type="text/javascript">
-      atOptions = {
-        'key' : '7d972344654b992824d432a8e4fa04ad',
-        'format' : 'iframe',
-        'height' : 300,
-        'width' : 160,
-        'params' : {}
-      };
-    </script>
-    <script type="text/javascript" src="//www.highrevenueformat.com/7d972344654b992824d432a8e4fa04ad/invoke.js"></script>
-  </div>
-</div>
-
-<div class="popup" id="popupTukar">
-  <div class="popup-box">
-    <h2>TUKAR KOIN DENGAN</h2>
-    <div class="popup-item"><span>1. Paket Nasi<br><small>100 koin</small></span><button class="btn-tukar-popup" onclick="prosesTukar('Paket Nasi', 100)">TUKAR</button></div>
-    <div class="popup-item"><span>2. Kenpop <br><small>750000 koin</small></span><button class="btn-tukar-popup" onclick="prosesTukar('Kenpop', 750000)">TUKAR</button></div>
-    <div class="popup-item"><span>3. Mix KenPoP+Kentang<br><small>750000 koin</small></span><button class="btn-tukar-popup" onclick="prosesTukar('Mix KenPoP+Kentang', 750000)">TUKAR</button></div>
-    
-    <button class="btn-tutup" onclick="tutupPopup('popupTukar')">TUTUP</button>
-  </div>
-</div>
-
-<div class="popup" id="popupStruk">
-  <div class="popup-box">
-    <h2>STRUK PENUKARAN</h2>
-    <div class="struk" id="isiStruk"></div>
-    <button class="btn-tutup" style="background:#22c55e; margin-bottom:10px;" onclick="kirimKeAdmin()">📲 KIRIM STRUK KE ADMIN GRUP</button>
-    <button class="btn-tutup" onclick="tutupPopup('popupStruk')">TUTUP</button>
-  </div>
-</div>
-<div class="popup" id="popupHistory"><div class="popup-box"><h2>RIWAYAT PENUKARAN</h2><div id="isiHistory" style="max-height:300px; overflow-y:auto;"></div><button class="btn-tutup" onclick="tutupPopup('popupHistory')">TUTUP</button></div></div>
+<div id="struk" class="popup" onclick="hide('struk')"><div class="box" onclick="event.stopPropagation()"><h2>✅ BERHASIL</h2><div id="isistruk" style="text-align:left;"></div><button class="btn-menu" style="max-width:100%;" onclick="hide('struk')">OK</button></div></div>
 
 <script>
-const ADMIN_WA = "6285143890586";
-const ADMIN_CODE = "kenpop123";
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyTe8t2UIqM_mxzxCjZiVsfomW2qsmdOsaigTBa92vbCCBvkmdlY4Jse_Dbxiei2Fzznw/exec";
+var userId = "player1"; // ID pemain. Nanti bisa diganti
+var koin = 0;
+var hist = localStorage.hist? JSON.parse(localStorage.hist) : [];
+var autoInterval = null;
+var autoWaktu = 0;
 
-let dataStrukTerakhir = null; 
-
-let currentWA = "";
-function getKey(key){ return key + '_' + currentWA; }
-
-let historyTukar = [];
-let coins, power, auto, pAds, aAds, autoEnd, pTimer, aTimer;
-let powerLockEnd, autoLockEnd;
-let coinsTxt, powerNowTxt, btnPower, btnAuto;
-let autoInterval, powerLockTimer, autoLockTimer, cooldownInterval;
-
-function getCooldownPower(index){
-  if(index === 0) return 15000;
-  if(index === 1) return 20000;
-  return 30000;
-}
-function getCooldownAuto(index){
-  if(index === 0) return 15000;
-  if(index === 1) return 20000;
-  if(index === 2) return 30000;
-  return 15000;
-}
-
-function hubungiAdmin(){
-  let pesan = `Halo Admin KenPOP, saya butuh bantuan akun saya terkunci nomer yang alah.`;
-  let linkWA = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(pesan)}`;
-  window.open(linkWA, '_blank');
-}
-
-function resetAdmin(){
-  let kode = prompt("Masukkan kode admin:");
-  if(kode === ADMIN_CODE){
-    if(confirm(`YAKIN HAPUS TOTAL DATA AKUN ${localStorage.kenpopWA}?`)){
-      let wa = localStorage.kenpopWA;
-      
-      localStorage.removeItem('kenpopWA');
-      localStorage.removeItem('kenpopNama');
-      localStorage.removeItem('coins_' + wa);
-      localStorage.removeItem('power_' + wa);
-      localStorage.removeItem('auto_' + wa);
-      localStorage.removeItem('pAds_' + wa);
-      localStorage.removeItem('aAds_' + wa);
-      localStorage.removeItem('autoEnd_' + wa);
-      localStorage.removeItem('pTimer_' + wa);
-      localStorage.removeItem('aTimer_' + wa);
-      localStorage.removeItem('lastLogin_' + wa);
-      localStorage.removeItem('historyTukar_' + wa);
-      localStorage.removeItem('powerLockEnd_' + wa);
-      localStorage.removeItem('autoLockEnd_' + wa);
-      
-      alert("✅ DATA TOTAL TERHAPUS! HP sudah bisa daftar ulang dari 0");
-      location.reload();
-    }
+// LOAD DATA DARI FIREBASE PAS BUKA GAME
+window.onload = async function(){
+  let koinFirebase = await ambilDariFirebase(userId);
+  if(koinFirebase > 0){
+    koin = koinFirebase;
   } else {
-    alert("❌ Kode salah!");
+    koin = localStorage.koin? parseFloat(localStorage.koin) : 0;
+  }
+  document.getElementById('koin').innerText = 'KOIIN: ' + formatKoin(koin);
+}
+
+function formatKoin(angka){
+  return angka.toLocaleString('id-ID', {minimumFractionDigits: 1, maximumFractionDigits: 1});
+}
+
+document.getElementById('tap').onclick = klik;
+
+if(localStorage.autoSisa){
+  autoWaktu = parseInt(localStorage.autoSisa);
+  if(autoWaktu > 0){ mulaiAuto(true); }
+}
+
+function klik(e){
+  tambahKoinManual();
+  muncratAcak();
+}
+
+async function tambahKoinManual(){
+  koin = koin + 0.1;
+  koin = Math.round(koin * 10) / 10;
+  localStorage.koin = koin;
+  document.getElementById('koin').innerText = 'KOIIN: ' + formatKoin(koin);
+  await simpanKeFirebase(userId, koin); // SIMPAN KE FIREBASE
+}
+
+async function tambahKoinAuto(){
+  koin = koin + 1;
+  localStorage.koin = koin;
+  document.getElementById('koin').innerText = 'KOIIN: ' + formatKoin(koin);
+  await simpanKeFirebase(userId, koin); // SIMPAN KE FIREBASE
+}
+
+function muncratAcak(){
+  var btn = document.getElementById('tap');
+  var rect = btn.getBoundingClientRect();
+  var cx = rect.left + rect.width/2;
+  var cy = rect.top + rect.height/2;
+  for(var i=0; i<4; i++){
+    var sudut = Math.random() * 360;
+    var jarak = 30 + Math.random() * 60;
+    var x = cx + jarak * Math.cos(sudut * Math.PI / 180);
+    var y = cy + jarak * Math.sin(sudut * Math.PI / 180);
+    var m = document.createElement('div');
+    m.className='money';
+    m.innerHTML = ['💵','🪙','💸'][Math.floor(Math.random()*3)];
+    m.style.left = x + 'px';
+    m.style.top = y + 'px';
+    m.style.animationDelay = i*0.08 + 's';
+    document.body.appendChild(m);
+    setTimeout(function(el){el.remove()},800, m);
   }
 }
 
-window.onload = function() {
-  if(localStorage.kenpopNama && localStorage.kenpopWA) {
-    currentWA = localStorage.kenpopWA;
-    historyTukar = JSON.parse(localStorage[getKey('historyTukar')] || "[]");
-    document.getElementById('loginBox').style.display = 'none';
-    document.getElementById('welcomeBox').style.display = 'block';
-    document.getElementById('w-nama').innerText = localStorage.kenpopNama;
-    document.getElementById('w-wa').innerText = currentWA;
-    loadData();
-  }
-
-  document.getElementById('logo').onclick = (e) => {
-    if(!currentWA) return;
-    let totalKlik = power + auto;
-    coins += totalKlik; showPlus('+'+totalKlik, e); save();
-  }
-
-  startCooldownTimer();
-}
-
-async function login() {
-  const nama = document.getElementById('nama').value.trim();
-  const wa = document.getElementById('wa').value.trim();
-  const btn = document.querySelector('.btn-login');
-
-  if(!nama ||!wa) { alert('Nama dan WA wajib diisi!'); return; }
-  if(!wa.startsWith('08')) { alert('No WA harus diawali 08'); return; }
-
-  if(localStorage.kenpopWA){
-    if(localStorage.kenpopWA!== wa){
-      let pesan = `Halo Admin KenPOP, saya mau reset akun.\nHP terkunci ke: ${localStorage.kenpopWA}`;
-      let linkWA = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(pesan)}`;
-      alert(`❌ HP INI SUDAH TERKUNCI!\n\nAkun terdaftar: ${localStorage.kenpopWA}\n\nHP ini tidak bisa ganti akun. Silahkan hubungi admin untuk reset.`);
-      window.open(linkWA, '_blank');
-      return;
-    }
-  }
-
-  btn.disabled = true; btn.innerText = 'MEMPROSES...';
-  await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({nama, wa, menu:"LOGIN BARU V24.9.1"}) });
-
-  currentWA = wa;
-  localStorage.kenpopNama = nama;
-  localStorage.kenpopWA = wa;
-
-  if(!localStorage[getKey('coins')]){
-    localStorage[getKey('coins')] = 0; localStorage[getKey('power')] = 1; localStorage[getKey('auto')] = 0;
-    localStorage[getKey('pAds')] = 0; localStorage[getKey('aAds')] = 0; localStorage[getKey('autoEnd')] = 0;
-    localStorage[getKey('pTimer')] = 0; localStorage[getKey('aTimer')] = 0; localStorage[getKey('lastLogin')] = "";
-    localStorage[getKey('historyTukar')] = "[]"; localStorage[getKey('powerLockEnd')] = 0; localStorage[getKey('autoLockEnd')] = 0;
-  }
-  historyTukar = JSON.parse(localStorage[getKey('historyTukar')] || "[]");
-
-  document.getElementById('w-nama').innerText = nama;
-  document.getElementById('w-wa').innerText = wa;
-  document.getElementById('loginBox').style.display = 'none';
-  document.getElementById('welcomeBox').style.display = 'block';
-  alert('Login Berhasil! Selamat bermain');
-  loadData();
-  btn.disabled = false; btn.innerText = 'MASUK GAME';
-}
-
-function logout(){
-  if(confirm('Yakin mau logout? \nAkun kamu tetap terkunci di HP ini')){
-    save();
-    clearInterval(autoInterval); clearInterval(powerLockTimer); clearInterval(autoLockTimer); clearInterval(cooldownInterval);
-    localStorage.removeItem('kenpopNama');
-    currentWA = "";
-    location.reload();
-  }
-}
-
-function loadData(){
-  let today = new Date().toISOString().split('T')[0];
-  let lastLogin = localStorage[getKey('lastLogin')] || "";
-  if(lastLogin!== today){
-    localStorage[getKey('power')] = 1; localStorage[getKey('pAds')] = 0; localStorage[getKey('aAds')] = 0;
-    localStorage[getKey('lastLogin')] = today;
-    localStorage[getKey('pTimer')] = 0; localStorage[getKey('aTimer')] = 0;
-    localStorage[getKey('powerLockEnd')] = 0; localStorage[getKey('autoLockEnd')] = 0;
-    if(lastLogin) alert('Selamat Pagi! Bonus Klik +1 direset ke +1');
-  }
-
-  coins = +localStorage[getKey('coins')] || 0;
-  power = +localStorage[getKey('power')] || 1;
-  auto = +localStorage[getKey('auto')] || 0;
-  pAds = +localStorage[getKey('pAds')] || 0;
-  aAds = +localStorage[getKey('aAds')] || 0;
-  autoEnd = +localStorage[getKey('autoEnd')] || 0;
-  pTimer = +localStorage[getKey('pTimer')] || 0;
-  aTimer = +localStorage[getKey('aTimer')] || 0;
-  powerLockEnd = +localStorage[getKey('powerLockEnd')] || 0;
-  autoLockEnd = +localStorage[getKey('autoLockEnd')] || 0;
-
-  coinsTxt = document.getElementById('coins');
-  powerNowTxt = document.getElementById('powerNow');
-  btnPower = document.getElementById('btnPower');
-  btnAuto = document.getElementById('btnAuto');
-
-  if(auto > 0 && Date.now() < autoEnd){
-    startAutoClick();
-  }
-  if(Date.now() < powerLockEnd){
-    lockPowerButton(powerLockEnd - Date.now());
-  }
-  if(Date.now() < autoLockEnd){
-    lockAutoButton(autoLockEnd - Date.now());
-  }
-
-  btnPower.onclick = () => {
-    if(power >= 10) { // MENTOK DI +10
-      alert('🔥 Upgrade Klik +1 sudah mentok di +10');
-      return; 
-    }
-    let cooldown = getCooldownPower(pAds);
-    if(Date.now() - pTimer < cooldown) return;
-    pAds++; pTimer = Date.now();
-    if(pAds >= 3){
-      if(power < 10) power++; // MENTOK DI +10
-      pAds = 0;
-      alert(`Klik +1 Naik! Sekarang Total = +${power}`);
-    }
-    if(pAds >= 2){
-      powerLockEnd = Date.now() + 600000;
-      lockPowerButton(600000);
-    }
-    save();
-  }
-
-  btnAuto.onclick = () => {
-    let cooldown = getCooldownAuto(aAds);
-    if(Date.now() - aTimer < cooldown) return;
-    aAds++; aTimer = Date.now();
-    if(aAds >= 6){
-      auto=power; autoEnd=Date.now()+3600000;
-      autoLockEnd = autoEnd;
-      aAds=0;
-      startAutoClick();
-      lockAutoButton(3600000);
-      alert('Auto Aktif 1 Jam!');
-    }
-    save();
-  }
-
-  save();
-  setInterval(save, 1000);
-}
-
-function startCooldownTimer(){
-  clearInterval(cooldownInterval);
-  cooldownInterval = setInterval(() => {
-    if(!btnPower ||!btnAuto) return;
-    if(Date.now() < powerLockEnd){
-      updatePowerTimer(powerLockEnd - Date.now());
-    } else {
-      cekValidasi('power');
-    }
-    if(Date.now() < autoLockEnd){
-      updateAutoTimer(autoLockEnd - Date.now());
-    } else {
-      cekValidasi('auto');
-    }
-  }, 1000);
-}
-
-function startAutoClick(){
-  clearInterval(autoInterval);
-  autoInterval = setInterval(() => {
-    if(Date.now() > autoEnd){
-      auto = 0; autoLockEnd = 0;
+function mulaiAuto(load){
+  if(autoInterval) return;
+  if(!load){ autoWaktu = 3600; }
+  document.getElementById('tap').className = 'auto';
+  autoInterval = setInterval(function(){
+    tambahKoinAuto();
+    muncratAcak();
+    autoWaktu--;
+    localStorage.autoSisa = autoWaktu;
+    var jam = Math.floor(autoWaktu/3600);
+    var menit = Math.floor((autoWaktu%3600)/60);
+    var detik = autoWaktu%60;
+    document.getElementById('btnAuto').innerText = '⏰ ' + jam + 'j ' + menit + 'm ' + detik + 'd';
+    document.getElementById('btnAuto').className = 'aktif';
+    document.getElementById('btnAuto').disabled = true;
+    if(autoWaktu <= 0){
       clearInterval(autoInterval);
-      save();
-      return;
-    }
-    coins += auto;
-    save();
-  }, 1000);
-}
-
-function lockPowerButton(duration){
-  btnPower.disabled = true;
-  updatePowerTimer(duration);
-  clearInterval(powerLockTimer);
-  powerLockTimer = setInterval(() => {
-    duration = powerLockEnd - Date.now();
-    if(duration <= 0){
-      clearInterval(powerLockTimer);
-      powerLockEnd = 0;
-      pAds = 0;
-      cekValidasi('power');
-      save();
-      return;
+      autoInterval = null;
+      localStorage.removeItem('autoSisa');
+      document.getElementById('btnAuto').innerText = 'AKTIFKAN AUTO KLIK 1 JAM';
+      document.getElementById('btnAuto').className = '';
+      document.getElementById('btnAuto').disabled = false;
+      document.getElementById('tap').className = '';
     }
   }, 1000);
 }
 
-function lockAutoButton(duration){
-  btnAuto.disabled = true;
-  updateAutoTimer(duration);
-  clearInterval(autoLockTimer);
-  autoLockTimer = setInterval(() => {
-    duration = autoLockEnd - Date.now();
-    if(duration <= 0){
-      clearInterval(autoLockTimer);
-      autoLockEnd = 0;
-      cekValidasi('auto');
-      save();
-      return;
-    }
-  }, 1000);
-}
-
-function updatePowerTimer(ms){
-  btnPower.innerText = `🔒 Tunggu ${formatTime(ms)}`;
-}
-
-function updateAutoTimer(ms){
-  btnAuto.innerText = `🔒 ${formatTime(ms)}`;
-}
-
-function cekValidasi(type){
-  let btn = type==='power'? btnPower : btnAuto;
-  let timer = type==='power'? pTimer : aTimer;
-  let ads = type==='power'? pAds : aAds;
-  let cooldown = type==='power'? getCooldownPower(ads) : getCooldownAuto(ads);
-
-  if(type === 'power' && Date.now() < powerLockEnd) return;
-  if(type === 'auto' && Date.now() < autoLockEnd) return;
-
-  if(timer > 0 && Date.now() - timer < cooldown){
-    let sisa = Math.ceil((cooldown - (Date.now() - timer))/1000);
-    btn.disabled = true; btn.innerText = `Tunggu ${sisa}s...`;
-  } else {
-    btn.disabled = false;
-    if(type==='power') btn.innerText = `Validasi ${ads}/3`;
-    if(type==='auto') btn.innerText = `Validasi ${ads}/6`;
+function show(id){
+  if(id=='riwayat'){
+    var s='';
+    if(hist.length==0){s='Belum ada riwayat'}
+    for(var i=0;i<hist.length;i++){s+='<div style="border-bottom:1px solid gold; padding:8px;">'+hist[i].menu+'<br><small>'+hist[i].tgl+' - '+hist[i].ewallet+'</small></div>'}
+    document.getElementById('list').innerHTML=s;
   }
+  document.getElementById(id).style.display='flex';
 }
+function hide(id){document.getElementById(id).style.display='none';}
 
-function formatTime(ms) {
-  let totalSec = Math.floor(ms / 1000);
-  let hours = Math.floor(totalSec / 3600);
-  let minutes = Math.floor((totalSec % 3600) / 60);
-  let seconds = totalSec % 60;
-  if(hours > 0) return `${hours}j ${minutes}m ${seconds}d`;
-  return `${minutes}m ${seconds}d`;
-}
-
-function showPlus(txt,e){
-  let d=document.createElement('div'); d.id='float'; d.innerText=txt;
-  d.style.left=e.clientX-20+'px'; d.style.top=e.clientY-20+'px';
-  document.body.appendChild(d); setTimeout(()=>d.remove(),800);
-}
-
-function bukaPopupTukar(){ document.getElementById('popupTukar').style.display='flex'; }
-function bukaPopupHistory(){ renderHistory(); document.getElementById('popupHistory').style.display='flex'; }
-function tutupPopup(id){ document.getElementById(id).style.display='none'; }
-
-function prosesTukar(menu, harga){
-  if(coins < harga){ alert(`Koin kurang! Butuh ${harga.toLocaleString('id')} koin`); return; }
-  coins -= harga;
-  let now = new Date();
-  let tgl = now.toLocaleDateString('id');
-  let jam = now.toLocaleTimeString('id');
-  let dataStruk = { tgl, jam, menu, harga, sisa: coins, nama: localStorage.kenpopNama, wa: currentWA };
-
-  historyTukar.unshift(dataStruk);
-  localStorage[getKey('historyTukar')] = JSON.stringify(historyTukar);
-
-  fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({...dataStruk, type:"TUKAR"}) });
-  tampilStruk(dataStruk);
-  tutupPopup('popupTukar');
-  save();
-}
-
-function tampilStruk(d){
-  dataStrukTerakhir = d;
-  let strukHTML = `
-    <b>Tanggal:</b> ${d.tgl} ${d.jam}<br>
-    <b>Nama:</b> ${d.nama}<br>
-    <b>WA:</b> ${d.wa}<br>
-    <b>Menu:</b> ${d.menu}<br>
-    <b>Harga:</b> ${d.harga.toLocaleString('id')} Koin<br>
-    <b>Sisa Koin:</b> ${d.sisa.toLocaleString('id')}<br>
-    <hr><b>--- KLIK KIRIM KE ADMIN 👇 ---</b>
-    <hr><b>--- TUNGGU KONFIRMASI ADMIN ---</b>
-    <hr><b>--- TUNJUKKAN SS KE KASIR ---</b>
-  `;
-  document.getElementById('isiStruk').innerHTML = strukHTML;
-  document.getElementById('popupStruk').style.display = 'flex';
-}
-
-function renderHistory(){
-  let box = document.getElementById('isiHistory');
-  box.innerHTML = '';
-  if(historyTukar.length === 0){ box.innerHTML = '<p>Belum ada riwayat</p>'; return; }
-  historyTukar.forEach(d => {
-    box.innerHTML += `<div class="history-item"><b>${d.menu}</b> - ${d.harga.toLocaleString('id')} Koin<br><small>${d.tgl} ${d.jam}</small></div>`;
-  });
-}
-
-function save(){
-  if(!currentWA) return;
-  let now = Date.now();
-  if(now > autoEnd && auto > 0){ auto = 0; aAds = 0; aTimer = 0; }
-  localStorage[getKey('coins')]=coins; localStorage[getKey('power')]=power; localStorage[getKey('auto')]=auto;
-  localStorage[getKey('pAds')]=pAds; localStorage[getKey('aAds')]=aAds; localStorage[getKey('autoEnd')]=autoEnd;
-  localStorage[getKey('pTimer')]=pTimer; localStorage[getKey('aTimer')]=aTimer; localStorage[getKey('historyTukar')]=JSON.stringify(historyTukar);
-  localStorage[getKey('powerLockEnd')]=powerLockEnd; localStorage[getKey('autoLockEnd')]=autoLockEnd;
-  coinsTxt.innerText = coins.toLocaleString('id');
-  powerNowTxt.innerText = power;
-}
-
-async function kirimKeAdmin(){
-    if(!dataStrukTerakhir) { alert('Data struk kosong'); return; }
-    const data = {
-        nama: dataStrukTerakhir.nama,
-        wa: dataStrukTerakhir.wa,
-        menu: dataStrukTerakhir.menu,
-        harga: dataStrukTerakhir.harga,
-        tgl: dataStrukTerakhir.tgl,
-        jam: dataStrukTerakhir.jam
-    };
-    try {
-        const response = await fetch('/api/kirim', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        const res = await response.json();
-        if(res.status == true){
-            alert('✅ Struk berhasil dikirim ke Admin');
-        } else {
-            alert('❌ Gagal kirim: ' + (res.reason || 'Cek server'));
-        }
-    } catch(err) {
-        alert('Error: ' + err);
-    }
+async function tukar(menu,harga){
+  if(koin<harga){alert('Koin kurang! Butuh '+formatKoin(harga)) ;return;}
+  var nama=prompt('Nama Penerima:'); if(!nama)return;
+  var no=prompt('No DANA/GOPAY:'); if(!no)return;
+  koin=koin-harga;
+  localStorage.koin=koin;
+  await simpanKeFirebase(userId, koin); // SIMPAN PAS WD
+  var tgl = new Date().toLocaleString('id');
+  var data = {menu:menu, tgl:tgl, ewallet:no};
+  hist.unshift(data);
+  localStorage.hist=JSON.stringify(hist);
+  document.getElementById('isistruk').innerHTML='<b>Tarik:</b> '+menu+'<br><b>Nama:</b> '+nama+'<br><b>No:</b> '+no+'<br><b>Sisa:</b> '+formatKoin(koin)+'<br><hr>Tunggu 1x24 Jam';
+  hide('tukar'); show('struk');
+  document.getElementById('koin').innerText = 'KOIIN: ' + formatKoin(koin);
 }
 </script>
 </body>
