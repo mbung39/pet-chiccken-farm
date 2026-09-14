@@ -52,11 +52,12 @@
 .history-item { background:#334155; padding:10px; border-radius:8px; margin:8px 0; text-align:left; font-size:14px; }
 .btn-lihat { background:#3b82f6; padding:5px 10px; font-size:12px; }
 
-/* === FULLSCREEN TRIVIA MODAL === */
+/* === FULLSCREEN TRIVIA MODAL V2 === */
 .trivia-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:none;z-index:99999;justify-content:center;align-items:center;flex-direction:column}
 .ad-slot-full{width:100%;height:100%;display:flex;justify-content:center;align-items:center;background:#000}
-.btn-close-bottom{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);background:#fff;color:#000;border:none;border-radius:50%;width:60px;height:60px;font-size:24px;font-weight:bold;display:none;z-index:100000;box-shadow:0 4px 15px rgba(255,255,255,0.3)}
-.timer-text{position:absolute;bottom:100px;left:50%;transform:translateX(-50%);color:#fff;font-size:16px;font-weight:bold;z-index:100000}
+.btn-close-bottom{position:absolute;bottom:25px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.2);backdrop-filter:blur(10px);color:#fff;border:2px solid rgba(255,255,255,0.3);border-radius:50%;width:35px;height:35px;font-size:16px;font-weight:bold;display:none;z-index:100000;cursor:pointer}
+.btn-close-bottom:active{transform:translateX(-50%) scale(0.9);background:rgba(255,255,255,0.4)}
+.timer-text{position:absolute;bottom:75px;left:50%;transform:translateX(-50%);color:#fff;font-size:14px;font-weight:bold;z-index:100000;opacity:0.8}
 </style>
 </head>
 <body>
@@ -151,7 +152,7 @@
     <script type="text/javascript" src="//www.highperformanceformat.com/GANTI_DENGAN_KODE_ADSTERRA_FULLSCREEN/invoke.js"></script>
   </div>
   <p class="timer-text" id="timerText">Tutup dalam 10 detik</p>
-  <button class="btn-close-bottom" id="closeBot">X</button>
+  <button class="btn-close-bottom" id="closeBot">×</button>
 </div>
 
 <script>
