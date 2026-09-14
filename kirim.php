@@ -1,8 +1,11 @@
 <?php
 header('Content-Type: application/json');
+
+// SETTING RAHASIA
 $token = "8BrJG3zsBmCxwcqLAa9J"; 
 $target_grup = "120363401234567890@g.us"; // ID grup KenPop
 
+// AMBIL DATA DARI JS
 $nama   = $_POST['nama'] ?? '-';
 $wa     = $_POST['wa'] ?? '-';
 $menu   = $_POST['menu'] ?? '-';
@@ -18,6 +21,7 @@ $message = "🎉 *PENUKARAN BARU KENPOP* 🎉\n\n"
          . "📅 $tgl $jam\n\n"
          . "Mohon segera diproses min 🙏";
 
+// KIRIM KE FONNTE
 $curl = curl_init();
 curl_setopt_array($curl, [
   CURLOPT_URL => 'https://api.fonnte.com/send',
@@ -26,6 +30,19 @@ curl_setopt_array($curl, [
   CURLOPT_HTTPHEADER => ["Authorization: $token"],
   CURLOPT_RETURNTRANSFER => true
 ]);
-echo curl_exec($curl);
+$response = curl_exec($curl);
+$err = curl_error($curl);
 curl_close($curl);
+
+// BALIKIN KE JS BENTUK JSON
+if($err){
+    echo json_encode(['status' => false, 'reason' => $err]);
+} else {
+    $res = json_decode($response, true);
+    if(isset($res['status']) && $res['status'] == true){
+        echo json_encode(['status' => true, 'pesan' => 'Terkirim']);
+    } else {
+        echo json_encode(['status' => false, 'reason' => $response]);
+    }
+}
 ?>
