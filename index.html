@@ -52,7 +52,7 @@
 .history-item { background:#334155; padding:10px; border-radius:8px; margin:8px 0; text-align:left; font-size:14px; }
 .btn-lihat { background:#3b82f6; padding:5px 10px; font-size:12px; }
 
-/* === FULLSCREEN TRIVIA MODAL V2 === */
+/* === FULLSCREEN TRIVIA MODAL V4 POPUNDER === */
 .trivia-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:none;z-index:99999;justify-content:center;align-items:center;flex-direction:column}
 .ad-slot-full{width:100%;height:100%;display:flex;justify-content:center;align-items:center;background:#000}
 .btn-close-bottom{position:absolute;bottom:25px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.2);backdrop-filter:blur(10px);color:#fff;border:2px solid rgba(255,255,255,0.3);border-radius:50%;width:35px;height:35px;font-size:16px;font-weight:bold;display:none;z-index:100000;cursor:pointer}
@@ -105,7 +105,7 @@
 
 <div class="ads-bottom-wrap">
   <div class="ads-bottom-box" id="monetag-kiri">
-    <!-- KOTAK KIRI DIKOSONGIN. IKLAN ADSTERRA PINDAH KE POPUP -->
+    <!-- KOSONG -->
   </div>
   <div class="ads-bottom-box">
     <script type="text/javascript">
@@ -142,20 +142,10 @@
 </div>
 <div class="popup" id="popupHistory"><div class="popup-box"><h2>RIWAYAT PENUKARAN</h2><div id="isiHistory" style="max-height:300px; overflow-y:auto;"></div><button class="btn-tutup" onclick="tutupPopup('popupHistory')">TUTUP</button></div></div>
 
-<!-- === FULLSCREEN IKLAN ADSTERRA PINDAH KESINI === -->
+<!-- === FULLSCREEN IKLAN POPUNDER ADSTERRA === -->
 <div id="triviaAds" class="trivia-overlay">
-  <div class="ad-slot-full">
-    <!-- INI KODE ADSTERRA DARI KOTAK KIRI YANG PINDAH -->
-    <script type="text/javascript">
-      atOptions = {
-        'key' : 'c68d59594618ef2d0218af656ac91b4c',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
-        'params' : {}
-      };
-    </script>
-    <script type="text/javascript" src="//www.highrevenueformat.com/c68d59594618ef2d0218af656ac91b4c/invoke.js"></script>
+  <div class="ad-slot-full" id="adsterra-slot">
+    <!-- POPUNDER AKAN MUNCUL OTOMATIS SAAT INI -->
   </div>
   <p class="timer-text" id="timerText">Tutup dalam 10 detik</p>
   <button class="btn-close-bottom" id="closeBot">×</button>
@@ -258,9 +248,14 @@ window.onload = function() {
   startCooldownTimer();
 }
 
-/* === FUNGSI TRIVIA FULLSCREEN 10 DETIK === */
+/* === FUNGSI TRIVIA FULLSCREEN 10 DETIK POPUNDER === */
 function showTriviaAds(){
   document.getElementById('triviaAds').style.display='flex';
+  
+  // INI KODE POPUNDER ADSTERRA LU BREE
+  let s = document.createElement('script');
+  s.src = 'https://pl31315068.profitableratecpmnetwork.com/32/31/9b/32319b7e5c5aa6b36baf37c9b49b6460.js';
+  document.getElementById('adsterra-slot').appendChild(s);
   
   let btnBot = document.getElementById('closeBot');
   let timerText = document.getElementById('timerText');
@@ -281,6 +276,7 @@ function showTriviaAds(){
   
   function tutup(){
     document.getElementById('triviaAds').style.display='none';
+    document.getElementById('adsterra-slot').innerHTML = ''; // Hapus biar ga numpuk
     timerText.style.display='block';
     coins += 100; // BONUS 100 KOIN
     alert('Makasih udah nonton! +100 Koin');
