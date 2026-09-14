@@ -320,6 +320,12 @@ function loadData(){
       pAds = 0;
       alert(`Klik +1 Naik! Sekarang Total = +${power}`);
     }
+    if(pAds >= 2){
+      powerLockEnd = Date.now() + 600000;
+      lockPowerButton(600000);
+    }
+    save();
+  }
 
   btnAuto.onclick = () => {
     let cooldown = getCooldownAuto(aAds);
