@@ -118,9 +118,9 @@
 <div class="popup" id="popupTukar">
   <div class="popup-box">
     <h2>TUKAR KOIN DENGAN</h2>
-    <div class="popup-item"><span>1. Paket Nasi<br><small>1000 koin</small></span><button class="btn-tukar-popup" onclick="prosesTukar('Paket Nasi', 1000)">TUKAR</button></div>
-    <div class="popup-item"><span>2. Kenpop <br><small>75000 koin</small></span><button class="btn-tukar-popup" onclick="prosesTukar('Kenpop', 75000)">TUKAR</button></div>
-    <div class="popup-item"><span>3. Mix KenPoP+Kentang<br><small>75000 koin</small></span><button class="btn-tukar-popup" onclick="prosesTukar('Mix KenPoP+Kentang', 75000)">TUKAR</button></div>
+    <div class="popup-item"><span>1. Paket Nasi<br><small>1000000 koin</small></span><button class="btn-tukar-popup" onclick="prosesTukar('Paket Nasi', 1000000)">TUKAR</button></div>
+    <div class="popup-item"><span>2. Kenpop <br><small>750000 koin</small></span><button class="btn-tukar-popup" onclick="prosesTukar('Kenpop', 750000)">TUKAR</button></div>
+    <div class="popup-item"><span>3. Mix KenPoP+Kentang<br><small>750000 koin</small></span><button class="btn-tukar-popup" onclick="prosesTukar('Mix KenPoP+Kentang', 750000)">TUKAR</button></div>
     
     <button class="btn-tutup" onclick="tutupPopup('popupTukar')">TUTUP</button>
   </div>
@@ -130,7 +130,7 @@
 <div class="popup" id="popupHistory"><div class="popup-box"><h2>RIWAYAT PENUKARAN</h2><div id="isiHistory" style="max-height:300px; overflow-y:auto;"></div><button class="btn-tutup" onclick="tutupPopup('popupHistory')">TUTUP</button></div></div>
 
 <script>
-const ADMIN_WA = "6281234567890";
+const ADMIN_WA = "6285143890586";
 const ADMIN_CODE = "kenpop123";
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyTe8t2UIqM_mxzxCjZiVsfomW2qsmdOsaigTBa92vbCCBvkmdlY4Jse_Dbxiei2Fzznw/exec";
 
@@ -156,7 +156,7 @@ function getCooldownAuto(index){
 }
 
 function hubungiAdmin(){
-  let pesan = `Halo Admin KenPOP, saya butuh bantuan.`;
+  let pesan = `Halo Admin KenPOP, saya butuh bantuan akun saya terkunci nomer yang alah.`;
   let linkWA = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(pesan)}`;
   window.open(linkWA, '_blank');
 }
