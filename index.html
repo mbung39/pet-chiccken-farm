@@ -1,10 +1,10 @@
 <!DOCTYPE html>
+<html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>KenPOP Tap - Main & Tuker Makanan Gratis!</title>
 
-<!-- KODE LINK PREVIEW -->
 <meta property="og:title" content="KENPOP TAP 🍗 Main & Tuker Makanan Gratis!" />
 <meta property="og:description" content="Tap ayam kumpulin koin. Tuker jadi KenPOP & Kentang beneran di kasir!" />
 <meta property="og:image" content="https://gameekenpop.vercel.app/kenpop.png" />
@@ -12,7 +12,6 @@
 <meta property="og:image:height" content="220" />
 <meta property="og:url" content="https://gameekenpop.vercel.app/" />
 <meta property="og:type" content="website" />
-
 <meta name="twitter:card" content="summary_large_image">
 </head>
 <style>
@@ -126,7 +125,6 @@
   </div>
 </div>
 
-<!-- EDIT 1: TAMBAH TOMBOL KIRIM ADMIN DI SINI -->
 <div class="popup" id="popupStruk">
   <div class="popup-box">
     <h2>STRUK PENUKARAN</h2>
@@ -142,7 +140,6 @@ const ADMIN_WA = "6285143890586";
 const ADMIN_CODE = "kenpop123";
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyTe8t2UIqM_mxzxCjZiVsfomW2qsmdOsaigTBa92vbCCBvkmdlY4Jse_Dbxiei2Fzznw/exec";
 
-// EDIT 2: TAMBAH VARIABEL GLOBAL BUAT SIMPEN DATA STRUK
 let dataStrukTerakhir = null; 
 
 let currentWA = "";
@@ -178,7 +175,6 @@ function resetAdmin(){
     if(confirm(`YAKIN HAPUS TOTAL DATA AKUN ${localStorage.kenpopWA}?`)){
       let wa = localStorage.kenpopWA;
       
-      // HAPUS SEMUA KEY MILIK NOMER INI
       localStorage.removeItem('kenpopWA');
       localStorage.removeItem('kenpopNama');
       localStorage.removeItem('coins_' + wa);
@@ -475,80 +471,66 @@ function prosesTukar(menu, harga){
 }
 
 function tampilStruk(d){
-  // EDIT 3: SIMPAN DATA BUAT DIKIRIM KE ADMIN
-  dataStrukTerakhir = d; 
-  document.getElementById('isiStruk').innerHTML = `<b>BERLAKU HARI INI: ${d.tgl}</b><br><br>Tanggal: ${d.tgl}<br>Jam: ${d.jam}<br><br>Nama: ${d.nama}<br>Menu: ${d.menu}<br>Harga: ${d.harga.toLocaleString('id')} Koin<br>Sisa Koin: ${d.sisa.toLocaleString('id')}<br><br><b>Silahkan SS dan tunjukkan ke Kasir</b>`;
-  document.getElementById('popupStruk').style.display='flex';
+  dataStrukTerakhir = d;
+  let strukHTML = `
+    <b>Tanggal:</b> ${d.tgl} ${d.jam}<br>
+    <b>Nama:</b> ${d.nama}<br>
+    <b>WA:</b> ${d.wa}<br>
+    <b>Menu:</b> ${d.menu}<br>
+    <b>Harga:</b> ${d.harga.toLocaleString('id')} Koin<br>
+    <b>Sisa Koin:</b> ${d.sisa.toLocaleString('id')}<br>
+    <hr><b>--- TUNJUKKAN KE KASIR ---</b>
+  `;
+  document.getElementById('isiStruk').innerHTML = strukHTML;
+  document.getElementById('popupStruk').style.display = 'flex';
 }
 
-// FIX V24.9.1 - ANTI STUCK
 function renderHistory(){
   let box = document.getElementById('isiHistory');
-  if(historyTukar.length === 0){ 
-    box.innerHTML = "<p>Belum ada riwayat penukaran</p>"; 
-    return; 
-  }
-  
-  box.innerHTML = "";
-  historyTukar.forEach((d) => {
-    let item = document.createElement('div');
-    item.className = 'history-item';
-    item.innerHTML = `${d.tgl} ${d.jam}<br>Menu: ${d.menu}<br>Harga: ${d.harga.toLocaleString('id')} koin<br>`;
-    
-    let btn = document.createElement('button');
-    btn.className = 'btn-lihat';
-    btn.innerText = 'LIHAT STRUK';
-    btn.onclick = () => tampilStruk(d);
-    
-    item.appendChild(btn);
-    box.appendChild(item);
+  box.innerHTML = '';
+  if(historyTukar.length === 0){ box.innerHTML = '<p>Belum ada riwayat</p>'; return; }
+  historyTukar.forEach(d => {
+    box.innerHTML += `<div class="history-item"><b>${d.menu}</b> - ${d.harga.toLocaleString('id')} Koin<br><small>${d.tgl} ${d.jam}</small><button class="btn-lihat" onclick='tampilStruk(${JSON.stringify(d).replace(/'/g,"&#39;")})'>LIHAT STRUK</button></div>`;
   });
-}
-
-// EDIT 4: TAMBAH FUNGSI BARU PALING BAWAH
-function kirimKeAdmin(){
-  if(!dataStrukTerakhir) { alert('Data struk kosong'); return; }
-
-  let formData = new FormData();
-  formData.append('nama', dataStrukTerakhir.nama);
-  formData.append('wa', dataStrukTerakhir.wa);
-  formData.append('menu', dataStrukTerakhir.menu);
-  formData.append('harga', dataStrukTerakhir.harga);
-  formData.append('tgl', dataStrukTerakhir.tgl);
-  formData.append('jam', dataStrukTerakhir.jam);
-
-  const response = await fetch('/api/kirim', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-});
-  .then(res => res.json())
-  .then(res => {
-    if(res.status == true){
-      alert('✅ Struk berhasil dikirim ke Grup Admin KenPop');
-    } else {
-      alert('❌ Gagal kirim: ' + (res.reason || 'Cek ID Grup di kirim.php'));
-    }
-  }).catch(err => alert('Error: ' + err));
 }
 
 function save(){
   if(!currentWA) return;
   let now = Date.now();
-  if(now > autoEnd && auto > 0){ auto = 0; aAds = 0; aTimer = 0; autoLockEnd = 0; clearInterval(autoInterval); }
-
+  if(now > autoEnd && auto > 0){ auto = 0; aAds = 0; aTimer = 0; }
   localStorage[getKey('coins')]=coins; localStorage[getKey('power')]=power; localStorage[getKey('auto')]=auto;
   localStorage[getKey('pAds')]=pAds; localStorage[getKey('aAds')]=aAds; localStorage[getKey('autoEnd')]=autoEnd;
-  localStorage[getKey('pTimer')]=pTimer; localStorage[getKey('aTimer')]=aTimer;
-  localStorage[getKey('powerLockEnd')]=powerLockEnd;
-  localStorage[getKey('autoLockEnd')]=autoLockEnd;
-
-  coinsTxt.innerText=coins.toLocaleString('id');
+  localStorage[getKey('pTimer')]=pTimer; localStorage[getKey('aTimer')]=aTimer; localStorage[getKey('historyTukar')]=JSON.stringify(historyTukar);
+  localStorage[getKey('powerLockEnd')]=powerLockEnd; localStorage[getKey('autoLockEnd')]=autoLockEnd;
+  coinsTxt.innerText = coins.toLocaleString('id');
   powerNowTxt.innerText = power;
-  if(btnPower.disabled === false) cekValidasi('power');
-  if(power >= 50){ btnPower.innerText = "✅ MAX 50"; btnPower.disabled = true; }
+}
 
-  if(btnAuto.disabled === false) cekValidasi('auto');
+async function kirimKeAdmin(){
+    if(!dataStrukTerakhir) { alert('Data struk kosong'); return; }
+    const data = {
+        nama: dataStrukTerakhir.nama,
+        wa: dataStrukTerakhir.wa,
+        menu: dataStrukTerakhir.menu,
+        harga: dataStrukTerakhir.harga,
+        tgl: dataStrukTerakhir.tgl,
+        jam: dataStrukTerakhir.jam
+    };
+    try {
+        const response = await fetch('/api/kirim', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const res = await response.json();
+        if(res.status == true){
+            alert('✅ Struk berhasil dikirim ke Admin');
+        } else {
+            alert('❌ Gagal kirim: ' + (res.reason || 'Cek server'));
+        }
+    } catch(err) {
+        alert('Error: ' + err);
+    }
 }
 </script>
 </body>
