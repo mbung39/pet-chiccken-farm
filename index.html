@@ -21,7 +21,7 @@ h1{color:gold; text-shadow:0 0 10px gold; margin:5px; font-size:20px;}
 .iklan-box2{width:100%; max-width:360px; height:50px; background:#000; border:2px dashed lime; border-radius:10px; margin:10px auto 15px; display:flex; justify-content:center; align-items:center; color:lime; font-size:11px;}
 #btnAuto{width:90%; max-width:320px; padding:16px; font-size:17px; font-weight:bold; border:0; border-radius:12px; background:linear-gradient(45deg, #00ff00, #00aa00); color:#000; animation: kedip 1.5s infinite;}
 #btnAuto.aktif{background:#002200; color:lime; animation:none; border:2px solid lime; box-shadow:0 0 15px lime;}
-#btnLogin{background:#4285F4; color:#fff; padding:10px 20px; border:0; border-radius:10px; font-weight:bold; margin-bottom:10px;}
+#btnLogin{background:#4285F4; color:#fff; padding:10px 20px; border:0; border-radius:10px; font-weight:bold; margin-bottom:10px; width:200px;}
 .money{position:fixed; font-size:26px; animation:muncrat 0.8s; pointer-events:none; z-index:999;}
 @keyframes muncrat{0%{opacity:1; transform:scale(0.5)} 100%{opacity:0; transform:translateY(-120px) scale(1.4)}}
 .uang-terbang{position:fixed; font-size:28px; bottom:-60px; animation: naikTurun 4s ease-in-out infinite; pointer-events:none; z-index:1; opacity:0.6;}
@@ -49,11 +49,10 @@ h1{color:gold; text-shadow:0 0 10px gold; margin:5px; font-size:20px;}
 <button id="btnAuto" onclick="mulaiAuto()">AKTIFKAN AUTO KLIK 1 JAM</button>
 <div class="iklan-box2">TEMPAT IKLAN 360x50</div>
 
-<div id="tukar" class="popup" onclick="hide('tukar')"><div class="box" onclick="event.stopPropagation()"><h2>💸 TUKAR SALDO 💸</h2><div class="item">DANA 5.000 <small>500.000 koin</small> <button class="btn-tukar" onclick="tukar('DANA 5000',500000)">TUKAR</button></div><button class="btn-menu" style="background:#555; color:#fff; max-width:100%;" onclick="hide('tukar')">TUTUP</button></div></div>
+<div id="tukar" class="popup" onclick="hide('tukar')"><div class="box" onclick="event.stopPropagation()"><h2>💸 TUKAR SALDO 💸</h2><div class="item">DANA 5.000 <small>500.000 koin</small> <button class="btn-tukar" onclick="tukar('DANA 5000',500000)">TUKAR</button></div><div class="item">GOPAY 10.000 <small>1.000.000 koin</small> <button class="btn-tukar" onclick="tukar('GOPAY 10000',1000000)">TUKAR</button></div><div class="item">DANA 20.000 <small>2.000.000 koin</small> <button class="btn-tukar" onclick="tukar('DANA 20000',2000000)">TUKAR</button></div><button class="btn-menu" style="background:#555; color:#fff; max-width:100%;" onclick="hide('tukar')">TUTUP</button></div></div>
 <div id="riwayat" class="popup" onclick="hide('riwayat')"><div class="box" onclick="event.stopPropagation()"><h2>📜 RIWAYAT WD</h2><div id="list"></div><button class="btn-menu" style="background:#555; color:#fff; max-width:100%;" onclick="hide('riwayat')">TUTUP</button></div></div>
 <div id="struk" class="popup" onclick="hide('struk')"><div class="box" onclick="event.stopPropagation()"><h2>✅ BERHASIL</h2><div id="isistruk"></div><button class="btn-menu" style="max-width:100%;" onclick="hide('struk')">OK</button></div></div>
 
-<!-- FIREBASE SDK VERSI COMPAT BIAR GAMPANG -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -79,6 +78,9 @@ var autoWaktu = 0;
 
 function formatKoin(angka){ return angka.toLocaleString('id-ID', {minimumFractionDigits: 1, maximumFractionDigits: 1}); }
 
+// NANGKEP HASIL LOGIN DARI REDIRECT
+auth.getRedirectResult().then().catch(function(error) { console.log(error); });
+
 auth.onAuthStateChanged(user => {
   if(user){
     userId = user.uid;
@@ -97,7 +99,7 @@ auth.onAuthStateChanged(user => {
 function loginGoogle(){
   if(userId){ auth.signOut(); return; }
   var provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider);
+  auth.signInWithRedirect(provider); // PAKAI REDIRECT BIAR JALAN DI HP
 }
 
 function loadData(){
@@ -124,7 +126,7 @@ document.getElementById('tap').onclick = () => { tambahKoinManual(); muncratAcak
 function tambahKoinManual(){ koin = Math.round((koin + 0.1)*10)/10; saveData(); updateUI(); }
 function tambahKoinAuto(){ koin = koin + 1; saveData(); updateUI(); }
 
-function muncratAcak(){ var btn = document.getElementById('tap'); var rect = btn.getBoundingClientRect(); var cx = rect.left + rect.width/2; var cy = rect.top + rect.height/2; for(var i=0; i<4; i++){ var sudut = Math.random() * 360; var jarak = 30 + Math.random() * 60; var x = cx + jarak * Math.cos(sudut * Math.PI / 180); var y = cy + jarak * Math.sin(sudut * Math.PI / 180); var m = document.createElement('div'); m.className='money'; m.innerHTML = ['💵','🪙','💸'][Math.floor(Math.random()*3)]; m.style.left = x + 'px'; m.style.top = y + 'px'; m.style.animationDelay = i*0.08 + 's'; document.body.appendChild(m); setTimeout(function(el){el.remove()},800, m); }
+function muncratAcak(){ var btn = document.getElementById('tap'); var rect = btn.getBoundingClientRect(); var cx = rect.left + rect.width/2; var cy = rect.top + rect.height/2; for(var i=0; i<4; i++){ var sudut = Math.random() * 360; var jarak = 30 + Math.random() * 60; var x = cx + jarak * Math.cos(sudut * Math.PI / 180); var y = cy + jarak * Math.sin(sudut * Math.PI / 180); var m = document.createElement('div'); m.className='money'; m.innerHTML = ['💵','🪙','💸'][Math.floor(Math.random()*3)]; m.style.left = x + 'px'; m.style.top = y + 'px'; m.style.animationDelay = i*0.08 + 's'; document.body.appendChild(m); setTimeout(function(el){el.remove()},800, m); }}
 
 function mulaiAuto(load){
   if(!userId){ alert('Login dulu bree!'); return; }
@@ -143,7 +145,7 @@ function mulaiAuto(load){
 function show(id){
   if(id=='riwayat'){
     var s=''; if(hist.length==0){s='Belum ada riwayat'}
-    for(var i=0;i<hist.length;i++){s+='<div style="border-bottom:1px solid gold; padding:8px;">'+hist[i].menu+'<br><small>'+hist[i].tgl+'</small></div>'}
+    for(var i=0;i<hist.length;i++){s+='<div style="border-bottom:1px solid gold; padding:8px;">'+hist[i].menu+'<br><small>'+hist[i].tgl+' - '+hist[i].ewallet+'</small></div>'}
     document.getElementById('list').innerHTML=s;
   }
   document.getElementById(id).style.display='flex';
