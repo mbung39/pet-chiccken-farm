@@ -1,7 +1,14 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ status: false })
 
-  const { nama, wa, menu, harga, tgl, jam } = req.body;
+  const formData = await req.formData();
+  const nama = formData.get('nama');
+  const wa = formData.get('wa');
+  const menu = formData.get('menu');
+  const harga = formData.get('harga');
+  const tgl = formData.get('tgl');
+  const jam = formData.get('jam');
+  
   const token = "8BrJG3zsBmCxwcqLAa9J";
   const target_grup = "120363401234567890@g.us";
 
@@ -9,7 +16,7 @@ export default async function handler(req, res) {
 
   const fonnte = await fetch('https://api.fonnte.com/send', {
     method: 'POST',
-    headers: { 'Authorization': token, 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: { 'Authorization': token },
     body: new URLSearchParams({ target: target_grup, message: message })
   });
   
