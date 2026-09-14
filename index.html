@@ -51,6 +51,16 @@
 .struk { text-align:left; background:#0f172a; padding:15px; border-radius:10px; border:1px dashed #22c55e; }
 .history-item { background:#334155; padding:10px; border-radius:8px; margin:8px 0; text-align:left; font-size:14px; }
 .btn-lihat { background:#3b82f6; padding:5px 10px; font-size:12px; }
+
+/* === TAMBAHAN 1: CSS TRIVIA MODAL === */
+.trivia-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(180deg, #ff8c00, #ff4500);display:none;z-index:9999;justify-content:center;align-items:center}
+.trivia-card{background:transparent;color:#fff;text-align:center;padding:20px;width:90%;max-width:400px;position:relative}
+.trivia-card h2{font-size:32px;font-weight:900;text-shadow:3px 3px #000;margin:0}
+.trivia-text{font-size:18px;margin:15px 0;font-weight:bold}
+.ad-slot{background:#000;width:100%;height:300px;border-radius:12px;margin:15px 0;display:flex;justify-content:center;align-items:center}
+.btn-close-top{position:absolute;top:10px;right:10px;background:#fff;color:#000;border:none;border-radius:50%;width:35px;height:35px;font-weight:bold;display:none;z-index:10000}
+.btn-close-bot{position:absolute;bottom:20px;right:20px;background:#fff;color:#000;border:none;border-radius:50%;width:40px;height:40px;font-size:20px;display:none;z-index:10000}
+.trivia-count{margin-top:10px;font-size:14px;opacity:0.8}
 </style>
 </head>
 <body>
@@ -135,6 +145,26 @@
 </div>
 <div class="popup" id="popupHistory"><div class="popup-box"><h2>RIWAYAT PENUKARAN</h2><div id="isiHistory" style="max-height:300px; overflow-y:auto;"></div><button class="btn-tutup" onclick="tutupPopup('popupHistory')">TUTUP</button></div></div>
 
+<!-- === TAMBAHAN 2: HTML TRIVIA MODAL === -->
+<div id="triviaAds" class="trivia-overlay">
+  <div class="trivia-card">
+    <button class="btn-close-top" id="closeTop">X</button>
+    <h2>? KAMU TAHU?</h2>
+    <p class="trivia-text" id="triviaText">Manusia menghasilkan listrik cukup untuk nyalain lampu kecil</p>
+    
+    <div class="ad-slot">
+      <!-- TARO KODE ADSTERRA INTERSTITIAL LU DISINI -->
+      <script type="text/javascript">
+        atOptions = {'key' : 'GANTI_DENGAN_KODE_ADSTERRA_LU','format' : 'iframe','height' : 300,'width' : 300,'params' : {}};
+      </script>
+      <script type="text/javascript" src="//www.highperformanceformat.com/GANTI_DENGAN_KODE_ADSTERRA_LU/invoke.js"></script>
+    </div>
+    
+    <button class="btn-close-bot" id="closeBot">X</button>
+    <p class="trivia-count">Trivia 3/49</p>
+  </div>
+</div>
+
 <script>
 const ADMIN_WA = "6285143890586";
 const ADMIN_CODE = "kenpop123";
@@ -150,6 +180,17 @@ let coins, power, auto, pAds, aAds, autoEnd, pTimer, aTimer;
 let powerLockEnd, autoLockEnd;
 let coinsTxt, powerNowTxt, btnPower, btnAuto;
 let autoInterval, powerLockTimer, autoLockTimer, cooldownInterval;
+
+/* === TAMBAHAN 3: VARIABEL TRIVIA === */
+let totalKlik = 0;
+let klikKeIklan = 500; // MUNCUL TIAP 500 KLIK
+const listTrivia = [
+  "Manusia menghasilkan listrik cukup untuk nyalain lampu kecil",
+  "Ayam bisa ingat lebih dari 100 wajah manusia",
+  "Madu tidak pernah basi. Bisa dimakan setelah 3000 tahun",
+  "KenPOP punya 11 rempah rahasia",
+  "1 klik = 1 langkah menuju KenPOP gratis"
+];
 
 function getCooldownPower(index){
   if(index === 0) return 15000;
@@ -189,6 +230,7 @@ function resetAdmin(){
       localStorage.removeItem('historyTukar_' + wa);
       localStorage.removeItem('powerLockEnd_' + wa);
       localStorage.removeItem('autoLockEnd_' + wa);
+      localStorage.removeItem('totalKlik_' + wa); // TAMBAHAN RESET TRIVIA
       
       alert("✅ DATA TOTAL TERHAPUS! HP sudah bisa daftar ulang dari 0");
       location.reload();
@@ -202,6 +244,7 @@ window.onload = function() {
   if(localStorage.kenpopNama && localStorage.kenpopWA) {
     currentWA = localStorage.kenpopWA;
     historyTukar = JSON.parse(localStorage[getKey('historyTukar')] || "[]");
+    totalKlik = parseInt(localStorage[getKey('totalKlik')]) || 0; // LOAD TRIVIA
     document.getElementById('loginBox').style.display = 'none';
     document.getElementById('welcomeBox').style.display = 'block';
     document.getElementById('w-nama').innerText = localStorage.kenpopNama;
@@ -211,11 +254,45 @@ window.onload = function() {
 
   document.getElementById('logo').onclick = (e) => {
     if(!currentWA) return;
-    let totalKlik = power + auto;
-    coins += totalKlik; showPlus('+'+totalKlik, e); save();
+    let totalKlikValue = power + auto;
+    coins += totalKlikValue; showPlus('+'+totalKlikValue, e); 
+    
+    /* === TAMBAHAN 4: LOGIKA TRIVIA TIAP 500 KLIK === */
+    totalKlik++;
+    localStorage.setItem(getKey('totalKlik'), totalKlik);
+    if(totalKlik % klikKeIklan === 0){
+        showTriviaAds();
+    }
+    
+    save();
   }
 
   startCooldownTimer();
+}
+
+/* === TAMBAHAN 5: FUNGSI TRIVIA === */
+function showTriviaAds(){
+  let randomTrivia = listTrivia[Math.floor(Math.random() * listTrivia.length)];
+  document.getElementById('triviaText').innerText = randomTrivia;
+  document.getElementById('triviaAds').style.display='flex';
+  
+  let btnTop = document.getElementById('closeTop');
+  let btnBot = document.getElementById('closeBot');
+  btnTop.style.display='none'; btnBot.style.display='none';
+  
+  setTimeout(()=>{
+    btnTop.style.display='block';
+    btnBot.style.display='block';
+  },5000); // 5 DETIK BARU MUNCUL X
+  
+  function tutup(){
+    document.getElementById('triviaAds').style.display='none';
+    coins += 100; // BONUS 100 KOIN
+    alert('Makasih udah nonton! +100 Koin');
+    save();
+  }
+  btnTop.onclick = tutup; 
+  btnBot.onclick = tutup;
 }
 
 async function login() {
@@ -248,8 +325,10 @@ async function login() {
     localStorage[getKey('pAds')] = 0; localStorage[getKey('aAds')] = 0; localStorage[getKey('autoEnd')] = 0;
     localStorage[getKey('pTimer')] = 0; localStorage[getKey('aTimer')] = 0; localStorage[getKey('lastLogin')] = "";
     localStorage[getKey('historyTukar')] = "[]"; localStorage[getKey('powerLockEnd')] = 0; localStorage[getKey('autoLockEnd')] = 0;
+    localStorage[getKey('totalKlik')] = 0; // TAMBAHAN TRIVIA
   }
   historyTukar = JSON.parse(localStorage[getKey('historyTukar')] || "[]");
+  totalKlik = parseInt(localStorage[getKey('totalKlik')]) || 0; // LOAD TRIVIA
 
   document.getElementById('w-nama').innerText = nama;
   document.getElementById('w-wa').innerText = wa;
@@ -507,6 +586,7 @@ function save(){
   localStorage[getKey('pAds')]=pAds; localStorage[getKey('aAds')]=aAds; localStorage[getKey('autoEnd')]=autoEnd;
   localStorage[getKey('pTimer')]=pTimer; localStorage[getKey('aTimer')]=aTimer; localStorage[getKey('historyTukar')]=JSON.stringify(historyTukar);
   localStorage[getKey('powerLockEnd')]=powerLockEnd; localStorage[getKey('autoLockEnd')]=autoLockEnd;
+  localStorage[getKey('totalKlik')]=totalKlik; // SAVE TRIVIA
   coinsTxt.innerText = coins.toLocaleString('id');
   powerNowTxt.innerText = power;
 }
