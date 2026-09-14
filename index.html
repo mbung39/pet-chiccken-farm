@@ -126,13 +126,24 @@
   </div>
 </div>
 
-<div class="popup" id="popupStruk"><div class="popup-box"><h2>STRUK PENUKARAN</h2><div class="struk" id="isiStruk"></div><button class="btn-tutup" onclick="tutupPopup('popupStruk')">TUTUP</button></div></div>
+<!-- EDIT 1: TAMBAH TOMBOL KIRIM ADMIN DI SINI -->
+<div class="popup" id="popupStruk">
+  <div class="popup-box">
+    <h2>STRUK PENUKARAN</h2>
+    <div class="struk" id="isiStruk"></div>
+    <button class="btn-tutup" style="background:#22c55e; margin-bottom:10px;" onclick="kirimKeAdmin()">📲 KIRIM STRUK KE ADMIN GRUP</button>
+    <button class="btn-tutup" onclick="tutupPopup('popupStruk')">TUTUP</button>
+  </div>
+</div>
 <div class="popup" id="popupHistory"><div class="popup-box"><h2>RIWAYAT PENUKARAN</h2><div id="isiHistory" style="max-height:300px; overflow-y:auto;"></div><button class="btn-tutup" onclick="tutupPopup('popupHistory')">TUTUP</button></div></div>
 
 <script>
 const ADMIN_WA = "6285143890586";
 const ADMIN_CODE = "kenpop123";
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyTe8t2UIqM_mxzxCjZiVsfomW2qsmdOsaigTBa92vbCCBvkmdlY4Jse_Dbxiei2Fzznw/exec";
+
+// EDIT 2: TAMBAH VARIABEL GLOBAL BUAT SIMPEN DATA STRUK
+let dataStrukTerakhir = null; 
 
 let currentWA = "";
 function getKey(key){ return key + '_' + currentWA; }
@@ -464,6 +475,8 @@ function prosesTukar(menu, harga){
 }
 
 function tampilStruk(d){
+  // EDIT 3: SIMPAN DATA BUAT DIKIRIM KE ADMIN
+  dataStrukTerakhir = d; 
   document.getElementById('isiStruk').innerHTML = `<b>BERLAKU HARI INI: ${d.tgl}</b><br><br>Tanggal: ${d.tgl}<br>Jam: ${d.jam}<br><br>Nama: ${d.nama}<br>Menu: ${d.menu}<br>Harga: ${d.harga.toLocaleString('id')} Koin<br>Sisa Koin: ${d.sisa.toLocaleString('id')}<br><br><b>Silahkan SS dan tunjukkan ke Kasir</b>`;
   document.getElementById('popupStruk').style.display='flex';
 }
@@ -490,6 +503,29 @@ function renderHistory(){
     item.appendChild(btn);
     box.appendChild(item);
   });
+}
+
+// EDIT 4: TAMBAH FUNGSI BARU PALING BAWAH
+function kirimKeAdmin(){
+  if(!dataStrukTerakhir) { alert('Data struk kosong'); return; }
+
+  let formData = new FormData();
+  formData.append('nama', dataStrukTerakhir.nama);
+  formData.append('wa', dataStrukTerakhir.wa);
+  formData.append('menu', dataStrukTerakhir.menu);
+  formData.append('harga', dataStrukTerakhir.harga);
+  formData.append('tgl', dataStrukTerakhir.tgl);
+  formData.append('jam', dataStrukTerakhir.jam);
+
+  fetch('kirim.php', { method: 'POST', body: formData })
+  .then(res => res.json())
+  .then(res => {
+    if(res.status == true){
+      alert('✅ Struk berhasil dikirim ke Grup Admin KenPop');
+    } else {
+      alert('❌ Gagal kirim: ' + (res.reason || 'Cek ID Grup di kirim.php'));
+    }
+  }).catch(err => alert('Error: ' + err));
 }
 
 function save(){
