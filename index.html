@@ -308,21 +308,18 @@ function loadData(){
   }
 
   btnPower.onclick = () => {
-    if(power >= 50) return;
+    if(power >= 10) { // MENTOK DI +10
+      alert('🔥 Upgrade Klik +1 sudah mentok di +10');
+      return; 
+    }
     let cooldown = getCooldownPower(pAds);
     if(Date.now() - pTimer < cooldown) return;
     pAds++; pTimer = Date.now();
     if(pAds >= 3){
-      if(power < 50) power++;
+      if(power < 10) power++; // MENTOK DI +10
       pAds = 0;
       alert(`Klik +1 Naik! Sekarang Total = +${power}`);
     }
-    if(pAds >= 2){
-      powerLockEnd = Date.now() + 600000;
-      lockPowerButton(600000);
-    }
-    save();
-  }
 
   btnAuto.onclick = () => {
     let cooldown = getCooldownAuto(aAds);
