@@ -490,7 +490,7 @@ function renderHistory(){
   box.innerHTML = '';
   if(historyTukar.length === 0){ box.innerHTML = '<p>Belum ada riwayat</p>'; return; }
   historyTukar.forEach(d => {
-    box.innerHTML += `<div class="history-item"><b>${d.menu}</b> - ${d.harga.toLocaleString('id')} Koin<br><small>${d.tgl} ${d.jam}</small><button class="btn-lihat" onclick='tampilStruk(${JSON.stringify(d).replace(/'/g,"&#39;")})'>LIHAT STRUK</button></div>`;
+    box.innerHTML += `<div class="history-item"><b>${d.menu}</b> - ${d.harga.toLocaleString('id')} Koin<br><small>${d.tgl} ${d.jam}</small></div>`;
   });
 }
 
