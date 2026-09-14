@@ -51,13 +51,6 @@
 .struk { text-align:left; background:#0f172a; padding:15px; border-radius:10px; border:1px dashed #22c55e; }
 .history-item { background:#334155; padding:10px; border-radius:8px; margin:8px 0; text-align:left; font-size:14px; }
 .btn-lihat { background:#3b82f6; padding:5px 10px; font-size:12px; }
-
-/* === FULLSCREEN TRIVIA MODAL V4 POPUNDER === */
-.trivia-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:none;z-index:99999;justify-content:center;align-items:center;flex-direction:column}
-.ad-slot-full{width:100%;height:100%;display:flex;justify-content:center;align-items:center;background:#000}
-.btn-close-bottom{position:absolute;bottom:25px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.2);backdrop-filter:blur(10px);color:#fff;border:2px solid rgba(255,255,255,0.3);border-radius:50%;width:35px;height:35px;font-size:16px;font-weight:bold;display:none;z-index:100000;cursor:pointer}
-.btn-close-bottom:active{transform:translateX(-50%) scale(0.9);background:rgba(255,255,255,0.4)}
-.timer-text{position:absolute;bottom:75px;left:50%;transform:translateX(-50%);color:#fff;font-size:14px;font-weight:bold;z-index:100000;opacity:0.8}
 </style>
 </head>
 <body>
@@ -105,7 +98,7 @@
 
 <div class="ads-bottom-wrap">
   <div class="ads-bottom-box" id="monetag-kiri">
-    <!-- KOSONG -->
+    <script async data-cfasync="false" src="//nap5k.com/tag.min.js" data-zone="11790593"></script>
   </div>
   <div class="ads-bottom-box">
     <script type="text/javascript">
@@ -142,15 +135,6 @@
 </div>
 <div class="popup" id="popupHistory"><div class="popup-box"><h2>RIWAYAT PENUKARAN</h2><div id="isiHistory" style="max-height:300px; overflow-y:auto;"></div><button class="btn-tutup" onclick="tutupPopup('popupHistory')">TUTUP</button></div></div>
 
-<!-- === FULLSCREEN IKLAN POPUNDER ADSTERRA === -->
-<div id="triviaAds" class="trivia-overlay">
-  <div class="ad-slot-full" id="adsterra-slot">
-    <!-- POPUNDER AKAN MUNCUL OTOMATIS SAAT INI -->
-  </div>
-  <p class="timer-text" id="timerText">Tutup dalam 10 detik</p>
-  <button class="btn-close-bottom" id="closeBot">×</button>
-</div>
-
 <script>
 const ADMIN_WA = "6285143890586";
 const ADMIN_CODE = "kenpop123";
@@ -166,10 +150,6 @@ let coins, power, auto, pAds, aAds, autoEnd, pTimer, aTimer;
 let powerLockEnd, autoLockEnd;
 let coinsTxt, powerNowTxt, btnPower, btnAuto;
 let autoInterval, powerLockTimer, autoLockTimer, cooldownInterval;
-
-/* === VARIABEL TRIVIA FULLSCREEN === */
-let totalKlik = 0;
-let klikKeIklan = 500; // MUNCUL TIAP 500 KLIK
 
 function getCooldownPower(index){
   if(index === 0) return 15000;
@@ -209,7 +189,6 @@ function resetAdmin(){
       localStorage.removeItem('historyTukar_' + wa);
       localStorage.removeItem('powerLockEnd_' + wa);
       localStorage.removeItem('autoLockEnd_' + wa);
-      localStorage.removeItem('totalKlik_' + wa);
       
       alert("✅ DATA TOTAL TERHAPUS! HP sudah bisa daftar ulang dari 0");
       location.reload();
@@ -223,7 +202,6 @@ window.onload = function() {
   if(localStorage.kenpopNama && localStorage.kenpopWA) {
     currentWA = localStorage.kenpopWA;
     historyTukar = JSON.parse(localStorage[getKey('historyTukar')] || "[]");
-    totalKlik = parseInt(localStorage[getKey('totalKlik')]) || 0;
     document.getElementById('loginBox').style.display = 'none';
     document.getElementById('welcomeBox').style.display = 'block';
     document.getElementById('w-nama').innerText = localStorage.kenpopNama;
@@ -233,56 +211,11 @@ window.onload = function() {
 
   document.getElementById('logo').onclick = (e) => {
     if(!currentWA) return;
-    let totalKlikValue = power + auto;
-    coins += totalKlikValue; showPlus('+'+totalKlikValue, e); 
-    
-    totalKlik++;
-    localStorage.setItem(getKey('totalKlik'), totalKlik);
-    if(totalKlik % klikKeIklan === 0){
-        showTriviaAds();
-    }
-    
-    save();
+    let totalKlik = power + auto;
+    coins += totalKlik; showPlus('+'+totalKlik, e); save();
   }
 
   startCooldownTimer();
-}
-
-/* === FUNGSI TRIVIA FULLSCREEN 10 DETIK POPUNDER === */
-function showTriviaAds(){
-  document.getElementById('triviaAds').style.display='flex';
-  
-  // INI KODE POPUNDER ADSTERRA LU BREE
-  let s = document.createElement('script');
-  s.src = 'https://pl31315068.profitableratecpmnetwork.com/32/31/9b/32319b7e5c5aa6b36baf37c9b49b6460.js';
-  document.getElementById('adsterra-slot').appendChild(s);
-  
-  let btnBot = document.getElementById('closeBot');
-  let timerText = document.getElementById('timerText');
-  btnBot.style.display='none';
-  
-  let detik = 10;
-  timerText.innerText = `Tutup dalam ${detik} detik`;
-  
-  let countdown = setInterval(()=>{
-    detik--;
-    timerText.innerText = `Tutup dalam ${detik} detik`;
-    if(detik <= 0){
-      clearInterval(countdown);
-      btnBot.style.display='block';
-      timerText.style.display='none';
-    }
-  },1000);
-  
-  function tutup(){
-    document.getElementById('triviaAds').style.display='none';
-    document.getElementById('adsterra-slot').innerHTML = ''; // Hapus biar ga numpuk
-    timerText.style.display='block';
-    coins += 100; // BONUS 100 KOIN
-    alert('Makasih udah nonton! +100 Koin');
-    save();
-  }
-  btnBot.onclick = tutup; 
 }
 
 async function login() {
@@ -315,10 +248,8 @@ async function login() {
     localStorage[getKey('pAds')] = 0; localStorage[getKey('aAds')] = 0; localStorage[getKey('autoEnd')] = 0;
     localStorage[getKey('pTimer')] = 0; localStorage[getKey('aTimer')] = 0; localStorage[getKey('lastLogin')] = "";
     localStorage[getKey('historyTukar')] = "[]"; localStorage[getKey('powerLockEnd')] = 0; localStorage[getKey('autoLockEnd')] = 0;
-    localStorage[getKey('totalKlik')] = 0;
   }
   historyTukar = JSON.parse(localStorage[getKey('historyTukar')] || "[]");
-  totalKlik = parseInt(localStorage[getKey('totalKlik')]) || 0;
 
   document.getElementById('w-nama').innerText = nama;
   document.getElementById('w-wa').innerText = wa;
@@ -576,7 +507,6 @@ function save(){
   localStorage[getKey('pAds')]=pAds; localStorage[getKey('aAds')]=aAds; localStorage[getKey('autoEnd')]=autoEnd;
   localStorage[getKey('pTimer')]=pTimer; localStorage[getKey('aTimer')]=aTimer; localStorage[getKey('historyTukar')]=JSON.stringify(historyTukar);
   localStorage[getKey('powerLockEnd')]=powerLockEnd; localStorage[getKey('autoLockEnd')]=autoLockEnd;
-  localStorage[getKey('totalKlik')]=totalKlik;
   coinsTxt.innerText = coins.toLocaleString('id');
   powerNowTxt.innerText = power;
 }
