@@ -1,56 +1,61 @@
 <!DOCTYPE html>
-<html><head>
-<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-<title>Juragan Kosan PRO - Gresik</title>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Betta Sultan - Toples Cupang</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;user-select:none}
-body{background:#111;font-family:system-ui;color:white;overflow:hidden}
-#top{background:#222;padding:12px;display:flex;justify-content:space-between}
-#money{color:#ffd700;font-weight:900}
-#room{width:100vw;height:60vh;background:#d9c5a0;position:relative;overflow:hidden;border:4px solid #8b6f47}
-#floor{position:absolute;bottom:0;width:100%;height:75%;background:linear-gradient(#e8dcc5,#c9b896);transform:perspective(500px) rotateX(25deg);transform-origin:bottom}
-.tile{position:absolute;width:60px;height:60px;border:1px solid rgba(0,0,0,0.1);background-size:cover}
-.furn{position:absolute;font-size:40px;z-index:10;transition:0.2s}
-.selected{filter:drop-shadow(0 0 10px gold);transform:scale(1.2)}
-#shop{background:#1e1e1e;position:absolute;bottom:0;width:100%;padding:12px;border-radius:20px 20px 0 0;max-height:38vh;overflow-y:auto}
-.item{display:flex;justify-content:space-between;align-items:center;background:#2a2a2a;margin:6px 0;padding:12px;border-radius:12px}
-.item b{font-size:14px}
-.btn{padding:8px 14px;border:none;border-radius:10px;background:#00d26a;color:white;font-weight:bold}
-.btn:disabled{background:#555}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#0a1628;font-family:'Segoe UI',system-ui,sans-serif;color:white;overflow:hidden;height:100vh;display:flex;flex-direction:column}
+.topbar{background:linear-gradient(90deg,#132f4c,#1a4a7a);padding:10px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #2a6cb6}
+.coin{background:#ffb700;color:#000;padding:4px 12px;border-radius:20px;font-weight:800;font-size:14px}
+#canvas{flex:1;background:radial-gradient(ellipse at center,#1a4a6a 0%,#0e2a40 50%,#071a2a 100%);position:relative;overflow:hidden}
+.fish{position:absolute;will-change:left,top}
+.jar{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:88%;height:82%;border:3px solid rgba(255,255,255,0.25);border-radius:20px 20px 40px 40px;background:linear-gradient(180deg,rgba(255,255,255,0.08),rgba(100,180,255,0.08));box-shadow:inset 0 0 40px rgba(100,200,255,0.2),0 10px 30px rgba(0,0,0,0.5)}
+.bubble{position:absolute;background:radial-gradient(circle,rgba(255,255,255,0.8),rgba(150,200,255,0.2));border-radius:50%;animation:rise linear infinite}
+@keyframes rise{to{transform:translateY(-120vh)}}
+.food{position:absolute;width:6px;height:6px;background:#d2a24c;border-radius:50%;box-shadow:0 0 4px #ffcc66}
+.menu{display:flex;background:#12233f;border-top:2px solid #2a6cb6}
+.menu button{flex:1;padding:12px 4px;background:transparent;border:none;color:#8bb0d0;font-weight:700;font-size:11px;cursor:pointer}
+.menu button.active{color:#fff;background:linear-gradient(180deg,#2a6cb6, #1a4a7a);border-top:2px solid #5aa0ff}
+.panel{position:absolute;bottom:58px;left:0;right:0;background:rgba(10,22,40,0.96);backdrop-filter:blur(10px);border-top:2px solid #2a6cb6;padding:12px;max-height:55%;overflow-y:auto;display:none;border-radius:16px 16px 0 0}
+.panel.show{display:block}
+.btn{padding:10px 16px;border:none;border-radius:10px;font-weight:800;cursor:pointer;margin:4px}
+.btn-feed{background:linear-gradient(#ffb700,#ff8c00);color:#000}
+.btn-breed{background:linear-gradient(#ff4d8d,#c02d5a);color:#fff}
+.btn-fight{background:linear-gradient(#5a7cff,#3a4cbf);color:#fff}
+.btn-buy{background:#1ec27a;color:#fff;padding:6px 12px;font-size:12px}
+.fish-card{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:8px;margin:6px 0;display:flex;justify-content:space-between;align-items:center}
 </style>
-</head><body>
-<div id="top"><div>🏠 JURAGAN KOSAN PRO</div><div id="money">💰 Rp 1.000.000</div></div>
-<div id="room">
-<div id="floor"></div>
-<div style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.6);padding:6px 12px;border-radius:20px;font-size:12px">👆 TAP LANTAI BUAT NARO FURNITURE</div>
+</head>
+<body>
+<div class="topbar">
+  <div style="font-weight:900">🐟 BETTA SULTAN</div>
+  <div style="display:flex;gap:8px"><span class="coin">🪙 <span id="coins">250</span></span><span class="coin" style="background:#5ad1ff">🍽️ <span id="foodCount">10</span></span></div>
 </div>
-<div id="shop">
-<div style="display:flex;justify-content:space-between"><b>🛒 TAMBAHKAN FURNITURE</b><span style="font-size:12px;opacity:0.6">Pilih dulu, baru tap lantai</span></div>
-<div class="item"><div><b>🛏️ Kasur Single</b><br><small style="opacity:0.6">Nyaman, penyewa betah</small></div><button class="btn" onclick="pick('🛏️',150000)">150k</button></div>
-<div class="item"><div><b>📺 TV LED 32"</b><br><small style="opacity:0.6">+100k sewa / hari</small></div><button class="btn" onclick="pick('📺',250000)">250k</button></div>
-<div class="item"><div><b>🪑 Meja Belajar</b><br><small style="opacity:0.6">Anak kos rajin</small></div><button class="btn" onclick="pick('🪑',100000)">100k</button></div>
-<div class="item"><div><b>🚽 Kamar Mandi Dalam</b><br><small style="opacity:0.6">Kosan elite auto laku</small></div><button class="btn" onclick="pick('🚽',400000)">400k</button></div>
-<div class="item"><div><b>❄️ AC Dingin</b><br><small style="opacity:0.6">+200k sewa</small></div><button class="btn" onclick="pick('❄️',500000)">500k</button></div>
-</div>
+<div id="canvas"><div class="jar"></div></div>
+<div class="panel" id="feedPanel"><h3>🍽️ Kasih Makan</h3><p style="font-size:12px;color:#8bb0d0;margin:6px 0">Tap FEED / tap layar air, pelet jatuh!</p><button class="btn btn-feed" onclick="doFeed()">FEED (-1) 🍪</button><div style="margin-top:8px"><small>Energy: </small><div style="background:#000;height:8px;border-radius:4px;width:100%"><div id="energyBar" style="width:70%;height:100%;background:linear-gradient(90deg,#1ec27a,#7eff7a);border-radius:4px"></div></div></div></div>
+<div class="panel" id="breedPanel"><h3>💖 Breeding Lab</h3><div class="fish-card"><span>❤️ Crimson Jantan Lv5</span><span>Ready</span></div><div class="fish-card"><span>💙 Azure Betina Lv4</span><span>Ready</span></div><div style="text-align:center;margin:8px 0">Compat: <b style="color:#ff7eb8">87% EXCELLENT!</b></div><button class="btn btn-breed" onclick="doBreed()">BREED NOW (-50 🪙)</button><div id="breedResult" style="margin-top:8px;font-size:12px"></div></div>
+<div class="panel" id="fightPanel"><h3>⚔️ Fight vs AI</h3><div style="display:flex;justify-content:space-between"><div>YOU: <b id="myHP">100</b> HP</div><div>AI: <b id="aiHP">100</b> HP</div></div><div style="display:flex;gap:6px;margin:10px 0"><div style="flex:1;background:#000;height:10px;border-radius:5px"><div id="myHPBar" style="width:100%;height:100%;background:#ff3b3b"></div></div><div style="flex:1;background:#000;height:10px;border-radius:5px"><div id="aiHPBar" style="width:100%;height:100%;background:#3b7bff"></div></div></div><div style="display:flex;gap:6px"><button class="btn btn-fight" style="flex:1" onclick="fightAction('attack')">ATTACK ⚔️</button><button class="btn btn-fight" style="flex:1;background:linear-gradient(#ff6a9d,#b03060)" onclick="fightAction('flare')">FLARE 🔥</button><button class="btn btn-fight" style="flex:1;background:linear-gradient(#4de1ff,#2080a0)" onclick="fightAction('dodge')">DODGE 💨</button></div><div id="fightLog" style="font-size:11px;margin-top:8px;color:#aaccff;height:40px;overflow:hidden">AI Cupang muncul! Pilih aksi!</div></div>
+<div class="panel" id="shopPanel"><h3>🏪 Toko Sultan</h3><div class="fish-card"><span>🔵 Halfmoon - 200 🪙</span><button class="btn btn-buy" onclick="buyFish('Halfmoon',200,'#4da6ff')">BUY</button></div><div class="fish-card"><span>👑 Crown Tail - 500 🪙</span><button class="btn btn-buy" onclick="buyFish('CrownTail',500,'#ff4d4d')">BUY</button></div><div class="fish-card"><span>🌌 Galaxy - 1000 🪙</span><button class="btn btn-buy" onclick="buyFish('Galaxy',1000,'#7a4dff')">BUY</button></div><div class="fish-card"><span>🍪 Pelet x10 - 30 🪙</span><button class="btn btn-buy" onclick="buyFood()">BUY</button></div></div>
+<div class="menu"><button class="active" onclick="openPanel('feed')">🍽️<br>FEED</button><button onclick="openPanel('breed')">💖<br>BREED</button><button onclick="openPanel('fight')">⚔️<br>FIGHT</button><button onclick="openPanel('shop')">🏪<br>SHOP</button></div>
 <script>
-let uang=1000000, selected=null;
-let room=document.getElementById('room');
-function pick(emoji,harga){
- if(uang<harga){alert('Uang kurang bree! Tagih kos dulu');return}
- selected=emoji;
- alert('Udah milih '+emoji+' bree! Sekarang TAP LANTAI kamar buat naroh!');
-}
-room.addEventListener('click',(e)=>{
- if(!selected)return;
- let furn=document.createElement('div');
- furn.className='furn'; furn.innerText=selected;
- furn.style.left=(e.clientX-25)+'px';
- furn.style.top=(e.clientY-80)+'px';
- furn.onclick=(ev)=>{ev.stopPropagation(); if(confirm('Jual furniture ini?')){furn.remove(); uang+=50000; upd()}};
- room.appendChild(furn);
- uang-=100000; selected=null; upd();
-})
-function upd(){document.getElementById('money').innerText='💰 Rp '+uang.toLocaleString('id-ID')}
-setInterval(()=>{let count=document.querySelectorAll('.furn').length; if(count>0){uang+=count*2000; upd()}},1000);
+let coins=250,food=10,energy=70,fishX=50,fishY=50,vx=0.6,vy=0.4,finPhase=0,fishEl=null,foods=[],fishColor='#ff2b2b';
+const canvas=document.getElementById('canvas');
+function createFish(){if(fishEl) fishEl.remove();fishEl=document.createElement('div');fishEl.className='fish';fishEl.innerHTML=`<svg width="90" height="60" viewBox="0 0 90 60"><ellipse cx="30" cy="30" rx="18" ry="10" fill="${fishColor}"/><circle cx="18" cy="28" r="2.5" fill="white"/><circle cx="18" cy="28" r="1.2" fill="black"/><path id="tail" d="M48 30 Q68 28 80 22 Q72 30 80 38 Q68 32 48 30" fill="${fishColor}" opacity="0.85"/></svg>`;fishEl.style.left=fishX+'%';fishEl.style.top=fishY+'%';canvas.appendChild(fishEl);}
+createFish();
+function animate(){finPhase+=0.18;if(Math.random()<0.015){vx+=(Math.random()-0.5)*0.8;vy+=(Math.random()-0.5)*0.6}vx*=0.995;vy*=0.995;fishX+=vx*0.35;fishY+=vy*0.35;if(fishX<8||fishX>82)vx*=-1;if(fishY<8||fishY>78)vy*=-1;fishX=Math.max(8,Math.min(82,fishX));fishY=Math.max(8,Math.min(78,fishY));if(fishEl){fishEl.style.left=fishX+'%';fishEl.style.top=fishY+'%';fishEl.style.transform=`scaleX(${vx>0?1:-1}) rotate(${vy*5}deg)`;let tail=fishEl.querySelector('#tail');if(tail)tail.setAttribute('d',`M48 30 Q68 ${28+Math.sin(finPhase)*8} 82 18 Q70 30 82 42 Q68 ${32-Math.sin(finPhase)*8} 48 30`)}if(foods.length>0){let closest=foods[0],dist=999;foods.forEach(f=>{let dx=(parseFloat(f.style.left)-fishX),dy=(parseFloat(f.style.top)-fishY);let d=Math.sqrt(dx*dx+dy*dy);if(d<dist){dist=d;closest=f}});if(closest){let dx=parseFloat(closest.style.left)-fishX,dy=parseFloat(closest.style.top)-fishY;vx+=dx*0.02;vy+=dy*0.02;if(dist<4){closest.remove();foods=foods.filter(x=>x!==closest);energy=Math.min(100,energy+12);updateBars();coins+=2;document.getElementById('coins').innerText=coins;popText('+2 🪙','gold')}}}if(Math.random()<0.08){let b=document.createElement('div');b.className='bubble';b.style.left=(10+Math.random()*80)+'%';b.style.bottom='5%';let s=4+Math.random()*8;b.style.width=s+'px';b.style.height=s+'px';b.style.animationDuration=(3+Math.random()*4)+'s';canvas.appendChild(b);setTimeout(()=>b.remove(),6000)}requestAnimationFrame(animate);}animate();
+function updateBars(){document.getElementById('energyBar').style.width=energy+'%';document.getElementById('foodCount').innerText=food}
+function doFeed(){if(food<=0){alert('Pelet habis! Beli di Shop!');return}food--;updateBars();for(let i=0;i<3;i++){let f=document.createElement('div');f.className='food';f.style.left=(20+Math.random()*60)+'%';f.style.top='5%';canvas.appendChild(f);foods.push(f);let fall=setInterval(()=>{let t=parseFloat(f.style.top)||5;f.style.top=(t+0.6)+'%';if(t>85)clearInterval(fall)},30)}}
+function doBreed(){if(coins<50){alert('Koin kurang!');return}coins-=50;let colors=['#ff2b7a','#7a4dff','#4dffb5','#ffd94d'];fishColor=colors[Math.floor(Math.random()*colors.length)];createFish();document.getElementById('breedResult').innerHTML=`🥚 Berhasil! Warna baru: <b style="color:${fishColor}">NEW BETTA</b>! +100 coin!`;coins+=100;document.getElementById('coins').innerText=coins;popText('BREED SUCCESS!','pink');}
+let myHP=100,aiHP=100;
+function fightAction(act){let dmgMy=Math.floor(12+Math.random()*12),dmgAi=Math.floor(8+Math.random()*15);if(act==='attack'){aiHP-=dmgMy;document.getElementById('fightLog').innerText=`ATTACK! -${dmgMy} ke AI!`}if(act==='flare'){dmgMy+=6;aiHP-=dmgMy;document.getElementById('fightLog').innerText=`FLARE! Musuh takut! -${dmgMy}`;if(fishEl)fishEl.style.transform+=' scale(1.3)'}if(act==='dodge'){if(Math.random()<0.5){document.getElementById('fightLog').innerText=`DODGE BERHASIL!`;dmgAi=0}else{document.getElementById('fightLog').innerText=`Dodge gagal!`}}myHP-=dmgAi;myHP=Math.max(0,myHP);aiHP=Math.max(0,aiHP);document.getElementById('myHP').innerText=myHP;document.getElementById('aiHP').innerText=aiHP;document.getElementById('myHPBar').style.width=myHP+'%';document.getElementById('aiHPBar').style.width=aiHP+'%';if(aiHP<=0){document.getElementById('fightLog').innerText='🏆 MENANG! +80 koin!';coins+=80;document.getElementById('coins').innerText=coins;setTimeout(()=>{myHP=100;aiHP=100;document.getElementById('myHP').innerText=100;document.getElementById('aiHP').innerText=100;document.getElementById('myHPBar').style.width='100%';document.getElementById('aiHPBar').style.width='100%'},1500)}if(myHP<=0){document.getElementById('fightLog').innerText='💀 Kalah...';setTimeout(()=>{myHP=100;aiHP=100;document.getElementById('myHP').innerText=100;document.getElementById('aiHP').innerText=100;document.getElementById('myHPBar').style.width='100%';document.getElementById('aiHPBar').style.width='100%'},1500)}}
+function buyFish(name,price,col){if(coins<price){alert('Koin kurang bree!');return}coins-=price;fishColor=col;createFish();document.getElementById('coins').innerText=coins;popText('BOUGHT '+name,'#4dff88');openPanel('feed');}
+function buyFood(){if(coins<30){alert('Koin kurang');return}coins-=30;food+=10;document.getElementById('coins').innerText=coins;updateBars();popText('+10 Food','gold')}
+function openPanel(p){document.querySelectorAll('.panel').forEach(e=>e.classList.remove('show'));document.querySelectorAll('.menu button').forEach(e=>e.classList.remove('active'));document.getElementById(p+'Panel').classList.add('show');event.currentTarget.classList.add('active');}
+function popText(t,c){let d=document.createElement('div');d.style.position='absolute';d.style.left='50%';d.style.top='40%';d.style.transform='translate(-50%,-50%)';d.style.color=c;d.style.fontWeight='900';d.style.fontSize='22px';d.style.textShadow='0 2px 10px #000';d.style.animation='pop 1s forwards';d.innerText=t;canvas.appendChild(d);setTimeout(()=>d.remove(),1000)}
+let style=document.createElement('style');style.innerHTML='@keyframes pop{0%{transform:translate(-50%,-50%) scale(0.5);opacity:0}50%{opacity:1}100%{transform:translate(-50%,-80%) scale(1);opacity:0}}';document.head.appendChild(style);
+canvas.addEventListener('click',()=>{if(document.getElementById('feedPanel').classList.contains('show'))doFeed()})
 </script>
-</body></html>
+</body>
+</html>
