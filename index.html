@@ -1,50 +1,56 @@
 <!DOCTYPE html>
 <html><head>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Juragan Kosan - HP Edition</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Juragan Kosan PRO - Gresik</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#1a1a2e;font-family:sans-serif;color:white}
-#header{background:#16213e;padding:15px;display:flex;justify-content:space-between;align-items:center}
-#uang{color:gold;font-weight:bold;font-size:18px}
-#kosan{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:15px}
-.kamar{background:#0f3460;border-radius:15px;padding:15px;min-height:150px;position:relative;border:2px solid #333}
-.kamar.isi{border-color:gold}
-.kamar button{width:100%;margin-top:8px;padding:8px;border:none;border-radius:8px;font-weight:bold}
-.btn-beli{background:#e94560;color:white}
-.btn-furniture{background:#533483;color:white}
-.harga{font-size:12px;opacity:0.8}
-.penghuni{font-size:30px;text-align:center;margin:10px 0}
-#toko{position:fixed;bottom:0;left:0;right:0;background:#0f3460;padding:15px;border-radius:20px 20px 0 0}
-.toko-item{display:flex;justify-content:space-between;align-items:center;background:#16213e;margin:8px 0;padding:10px;border-radius:10px}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none}
+body{background:#111;font-family:system-ui;color:white;overflow:hidden}
+#top{background:#222;padding:12px;display:flex;justify-content:space-between}
+#money{color:#ffd700;font-weight:900}
+#room{width:100vw;height:60vh;background:#d9c5a0;position:relative;overflow:hidden;border:4px solid #8b6f47}
+#floor{position:absolute;bottom:0;width:100%;height:75%;background:linear-gradient(#e8dcc5,#c9b896);transform:perspective(500px) rotateX(25deg);transform-origin:bottom}
+.tile{position:absolute;width:60px;height:60px;border:1px solid rgba(0,0,0,0.1);background-size:cover}
+.furn{position:absolute;font-size:40px;z-index:10;transition:0.2s}
+.selected{filter:drop-shadow(0 0 10px gold);transform:scale(1.2)}
+#shop{background:#1e1e1e;position:absolute;bottom:0;width:100%;padding:12px;border-radius:20px 20px 0 0;max-height:38vh;overflow-y:auto}
+.item{display:flex;justify-content:space-between;align-items:center;background:#2a2a2a;margin:6px 0;padding:12px;border-radius:12px}
+.item b{font-size:14px}
+.btn{padding:8px 14px;border:none;border-radius:10px;background:#00d26a;color:white;font-weight:bold}
+.btn:disabled{background:#555}
 </style>
 </head><body>
-<div id="header"><div>🏠 JURAGAN KOSAN</div><div id="uang">💰 Rp 500.000</div></div>
-<div style="padding:10px;text-align:center;opacity:0.7">Tap kamar buat kelola kosan lu bree!</div>
-<div id="kosan"></div>
-<div id="toko">
-<div style="font-weight:bold;margin-bottom:10px">🛒 TOKO FURNITURE</div>
-<div class="toko-item"><span>🛏️ Kasur (+Rp 50k/sewa)</span><button onclick="beliF('kasur',100000)">Rp 100k</button></div>
-<div class="toko-item"><span>📺 TV (+Rp 100k/sewa)</span><button onclick="beliF('tv',200000)">Rp 200k</button></div>
-<div class="toko-item"><span>✨ Upgrade Mewah</span><button onclick="beliF('mewah',500000)">Rp 500k</button></div>
+<div id="top"><div>🏠 JURAGAN KOSAN PRO</div><div id="money">💰 Rp 1.000.000</div></div>
+<div id="room">
+<div id="floor"></div>
+<div style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.6);padding:6px 12px;border-radius:20px;font-size:12px">👆 TAP LANTAI BUAT NARO FURNITURE</div>
+</div>
+<div id="shop">
+<div style="display:flex;justify-content:space-between"><b>🛒 TAMBAHKAN FURNITURE</b><span style="font-size:12px;opacity:0.6">Pilih dulu, baru tap lantai</span></div>
+<div class="item"><div><b>🛏️ Kasur Single</b><br><small style="opacity:0.6">Nyaman, penyewa betah</small></div><button class="btn" onclick="pick('🛏️',150000)">150k</button></div>
+<div class="item"><div><b>📺 TV LED 32"</b><br><small style="opacity:0.6">+100k sewa / hari</small></div><button class="btn" onclick="pick('📺',250000)">250k</button></div>
+<div class="item"><div><b>🪑 Meja Belajar</b><br><small style="opacity:0.6">Anak kos rajin</small></div><button class="btn" onclick="pick('🪑',100000)">100k</button></div>
+<div class="item"><div><b>🚽 Kamar Mandi Dalam</b><br><small style="opacity:0.6">Kosan elite auto laku</small></div><button class="btn" onclick="pick('🚽',400000)">400k</button></div>
+<div class="item"><div><b>❄️ AC Dingin</b><br><small style="opacity:0.6">+200k sewa</small></div><button class="btn" onclick="pick('❄️',500000)">500k</button></div>
 </div>
 <script>
-let uang=500000;let kamarTerpilih=0;
-let kos=[{punya:true,f:[],penghuni:true,sewa:100000},{punya:false},{punya:false},{punya:false}]
-function render(){
-document.getElementById('uang').innerText='💰 Rp '+uang.toLocaleString('id-ID');
-let html='';kos.forEach((k,i)=>{
-if(!k.punya){html+=`<div class="kamar"><div style="text-align:center;margin-top:30px">🔒 Kamar ${i+1} Kosong</div><button class="btn-beli" onclick="beliKamar(${i})">Beli Rp 300k</button></div>`}
-else{let furn=k.f.join(' ');html+=`<div class="kamar isi" onclick="pilihKamar(${i})"><div>Kamar ${i+1} ${k.penghuni?'🟢 Terisi':'🔴 Kosong'}</div><div class="penghuni">${k.penghuni?'🧑‍💼':''}</div><div>${furn||'Kosongan'}</div><div class="harga">Sewa: Rp ${k.sewa.toLocaleString('id-ID')}/hari</div><button class="btn-furniture">Kelola</button></div>`}
-});document.getElementById('kosan').innerHTML=html
+let uang=1000000, selected=null;
+let room=document.getElementById('room');
+function pick(emoji,harga){
+ if(uang<harga){alert('Uang kurang bree! Tagih kos dulu');return}
+ selected=emoji;
+ alert('Udah milih '+emoji+' bree! Sekarang TAP LANTAI kamar buat naroh!');
 }
-function beliKamar(i){if(uang>=300000){uang-=300000;kos[i]={punya:true,f:[],penghuni:false,sewa:100000};render()}else alert('Uang kurang bree!')}
-function pilihKamar(i){kamarTerpilih=i;if(!kos[i].penghuni&&kos[i].f.length>0){kos[i].penghuni=true;alert('Penghuni masuk bree! Kosan lu laku! 🎉')}render()}
-function beliF(t,h){if(uang<h){alert('Uang kurang! Tagih sewa dulu');return}let k=kos[kamarTerpilih];if(!k||!k.punya){alert('Pilih kamar dulu bree, tap kamarnya!');return}uang-=h;
-if(t=='kasur'){k.f.push('🛏️');k.sewa+=50000}
-if(t=='tv'){k.f.push('📺');k.sewa+=100000}
-if(t=='mewah'){k.f.push('✨');k.sewa+=200000}
-render()}
-setInterval(()=>{kos.forEach(k=>{if(k.punya&&k.penghuni){uang+=k.sewa/10}});render()},1000);
-render();
-</script></body></html>
+room.addEventListener('click',(e)=>{
+ if(!selected)return;
+ let furn=document.createElement('div');
+ furn.className='furn'; furn.innerText=selected;
+ furn.style.left=(e.clientX-25)+'px';
+ furn.style.top=(e.clientY-80)+'px';
+ furn.onclick=(ev)=>{ev.stopPropagation(); if(confirm('Jual furniture ini?')){furn.remove(); uang+=50000; upd()}};
+ room.appendChild(furn);
+ uang-=100000; selected=null; upd();
+})
+function upd(){document.getElementById('money').innerText='💰 Rp '+uang.toLocaleString('id-ID')}
+setInterval(()=>{let count=document.querySelectorAll('.furn').length; if(count>0){uang+=count*2000; upd()}},1000);
+</script>
+</body></html>
