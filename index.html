@@ -1,169 +1,50 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>💸 MONEY TAP SULTAN 💸</title>
+<html><head>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Juragan Kosan - HP Edition</title>
 <style>
-*{box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none;}
-body{background:linear-gradient(135deg, #001a00 0%, #003300 100%); color:white; text-align:center; font-family:Arial; margin:0; padding:15px; overflow-x:hidden;}
-h1{color:gold; text-shadow:0 0 10px gold; margin:5px; font-size:20px;}
-#koin{font-size:28px; background:#000; padding:10px 20px; border:3px solid gold; border-radius:20px; display:inline-block; margin:10px; color:gold; box-shadow:0 0 20px gold;}
-#tap{width:170px; height:170px; background:#000; border-radius:50%; border:7px solid gold; font-size:70px; margin:15px; box-shadow: 0 0 40px gold, inset 0 0 25px rgba(255,215,0,0.3); transition: all 0.2s;}
-#tap:active{transform:scale(0.88);} #tap.auto{box-shadow: 0 0 50px lime; border-color:lime;}
-.btn-group{display:flex; justify-content:center; gap:10px; margin:10px 0;}
-.btn-menu{flex:1; max-width:160px; padding:12px 10px; background:gold; color:#000; border:0; border-radius:12px; font-weight:bold; font-size:14px;}
-.popup{display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:99; justify-content:center; align-items:center;}
-.box{background:#001a00; border:3px solid gold; padding:20px; width:90%; max-width:400px; border-radius:15px;}
-.item{display:flex; justify-content:space-between; align-items:center; background:#000; padding:12px; margin:8px 0; border-radius:8px; border:1px solid gold; font-size:14px;}
-.btn-tukar{background:gold; color:#000; border:0; padding:8px 12px; border-radius:8px; font-weight:bold; font-size:12px;}
-.iklan-box{width:100%; max-width:320px; height:100px; background:#000; border:2px dashed gold; border-radius:10px; margin:15px auto 10px; display:flex; justify-content:center; align-items:center; color:gold; font-size:12px;}
-.iklan-box2{width:100%; max-width:360px; height:50px; background:#000; border:2px dashed lime; border-radius:10px; margin:10px auto 15px; display:flex; justify-content:center; align-items:center; color:lime; font-size:11px;}
-#btnAuto{width:90%; max-width:320px; padding:16px; font-size:17px; font-weight:bold; border:0; border-radius:12px; background:linear-gradient(45deg, #00ff00, #00aa00); color:#000; animation: kedip 1.5s infinite;}
-#btnAuto.aktif{background:#002200; color:lime; animation:none; border:2px solid lime; box-shadow:0 0 15px lime;}
-#btnLogin{background:#4285F4; color:#fff; padding:10px 20px; border:0; border-radius:10px; font-weight:bold; margin-bottom:10px; width:200px;}
-.money{position:fixed; font-size:26px; animation:muncrat 0.8s; pointer-events:none; z-index:999;}
-@keyframes muncrat{0%{opacity:1; transform:scale(0.5)} 100%{opacity:0; transform:translateY(-120px) scale(1.4)}}
-.uang-terbang{position:fixed; font-size:28px; bottom:-60px; animation: naikTurun 4s ease-in-out infinite; pointer-events:none; z-index:1; opacity:0.6;}
-@keyframes naikTurun {0%{transform:translateY(0); opacity:0} 15%{opacity:0.7} 50%{transform:translateY(-300px)} 85%{opacity:0.7} 100%{transform:translateY(-600px); opacity:0}}
-@keyframes kedip{0%,100%{opacity:1;} 50%{opacity:0.7;}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#1a1a2e;font-family:sans-serif;color:white}
+#header{background:#16213e;padding:15px;display:flex;justify-content:space-between;align-items:center}
+#uang{color:gold;font-weight:bold;font-size:18px}
+#kosan{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:15px}
+.kamar{background:#0f3460;border-radius:15px;padding:15px;min-height:150px;position:relative;border:2px solid #333}
+.kamar.isi{border-color:gold}
+.kamar button{width:100%;margin-top:8px;padding:8px;border:none;border-radius:8px;font-weight:bold}
+.btn-beli{background:#e94560;color:white}
+.btn-furniture{background:#533483;color:white}
+.harga{font-size:12px;opacity:0.8}
+.penghuni{font-size:30px;text-align:center;margin:10px 0}
+#toko{position:fixed;bottom:0;left:0;right:0;background:#0f3460;padding:15px;border-radius:20px 20px 0 0}
+.toko-item{display:flex;justify-content:space-between;align-items:center;background:#16213e;margin:8px 0;padding:10px;border-radius:10px}
 </style>
-</head>
-<body>
-
-<div class="uang-terbang" style="left:10%;">💸</div><div class="uang-terbang" style="left:50%;">💵</div><div class="uang-terbang" style="left:90%;">🪙</div>
-
-<button id="btnLogin" onclick="loginGoogle()">LOGIN GOOGLE</button>
-<div id="userInfo" style="color:gold; font-size:12px; margin-bottom:10px;">Belum Login</div>
-
-<h1>💸 MONEY TAP SULTAN 💸</h1>
-<div id="koin">KOIIN: 0,0</div><br>
-<button id="tap">💰</button><br>
-
-<div class="btn-group">
-  <button class="btn-menu" onclick="show('tukar')">TUKAR SALDO</button>
-  <button class="btn-menu" onclick="show('riwayat')">RIWAYAT</button>
+</head><body>
+<div id="header"><div>🏠 JURAGAN KOSAN</div><div id="uang">💰 Rp 500.000</div></div>
+<div style="padding:10px;text-align:center;opacity:0.7">Tap kamar buat kelola kosan lu bree!</div>
+<div id="kosan"></div>
+<div id="toko">
+<div style="font-weight:bold;margin-bottom:10px">🛒 TOKO FURNITURE</div>
+<div class="toko-item"><span>🛏️ Kasur (+Rp 50k/sewa)</span><button onclick="beliF('kasur',100000)">Rp 100k</button></div>
+<div class="toko-item"><span>📺 TV (+Rp 100k/sewa)</span><button onclick="beliF('tv',200000)">Rp 200k</button></div>
+<div class="toko-item"><span>✨ Upgrade Mewah</span><button onclick="beliF('mewah',500000)">Rp 500k</button></div>
 </div>
-
-<div class="iklan-box">TEMPAT IKLAN 320x100</div>
-<button id="btnAuto" onclick="mulaiAuto()">AKTIFKAN AUTO KLIK 1 JAM</button>
-<div class="iklan-box2">TEMPAT IKLAN 360x50</div>
-
-<div id="tukar" class="popup" onclick="hide('tukar')"><div class="box" onclick="event.stopPropagation()"><h2>💸 TUKAR SALDO 💸</h2><div class="item">DANA 5.000 <small>500.000 koin</small> <button class="btn-tukar" onclick="tukar('DANA 5000',500000)">TUKAR</button></div><div class="item">GOPAY 10.000 <small>1.000.000 koin</small> <button class="btn-tukar" onclick="tukar('GOPAY 10000',1000000)">TUKAR</button></div><div class="item">DANA 20.000 <small>2.000.000 koin</small> <button class="btn-tukar" onclick="tukar('DANA 20000',2000000)">TUKAR</button></div><button class="btn-menu" style="background:#555; color:#fff; max-width:100%;" onclick="hide('tukar')">TUTUP</button></div></div>
-<div id="riwayat" class="popup" onclick="hide('riwayat')"><div class="box" onclick="event.stopPropagation()"><h2>📜 RIWAYAT WD</h2><div id="list"></div><button class="btn-menu" style="background:#555; color:#fff; max-width:100%;" onclick="hide('riwayat')">TUTUP</button></div></div>
-<div id="struk" class="popup" onclick="hide('struk')"><div class="box" onclick="event.stopPropagation()"><h2>✅ BERHASIL</h2><div id="isistruk"></div><button class="btn-menu" style="max-width:100%;" onclick="hide('struk')">OK</button></div></div>
-
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyC0nYhsMgueVA_91JWw-m8pXWRIZiizzG4",
-  authDomain: "tapkoin-sultan.firebaseapp.com",
-  projectId: "tapkoin-sultan",
-  storageBucket: "tapkoin-sultan.firebasestorage.app",
-  messagingSenderId: "520240440983",
-  appId: "1:520240440983:web:92549e6ee3beb156bcebd2"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-var koin = 0;
-var hist = [];
-var userId = null;
-var autoInterval = null;
-var autoWaktu = 0;
-
-function formatKoin(angka){ return angka.toLocaleString('id-ID', {minimumFractionDigits: 1, maximumFractionDigits: 1}); }
-
-// NANGKEP HASIL LOGIN DARI REDIRECT
-auth.getRedirectResult().then().catch(function(error) { console.log(error); });
-
-auth.onAuthStateChanged(user => {
-  if(user){
-    userId = user.uid;
-    document.getElementById('btnLogin').innerText = 'LOGOUT';
-    document.getElementById('userInfo').innerText = 'Halo, ' + user.displayName;
-    loadData();
-  }else{
-    userId = null;
-    document.getElementById('btnLogin').innerText = 'LOGIN GOOGLE';
-    document.getElementById('userInfo').innerText = 'Belum Login';
-    koin = 0; hist = [];
-    updateUI();
-  }
-});
-
-function loginGoogle(){
-  if(userId){ auth.signOut(); return; }
-  var provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithRedirect(provider); // PAKAI REDIRECT BIAR JALAN DI HP
+let uang=500000;let kamarTerpilih=0;
+let kos=[{punya:true,f:[],penghuni:true,sewa:100000},{punya:false},{punya:false},{punya:false}]
+function render(){
+document.getElementById('uang').innerText='💰 Rp '+uang.toLocaleString('id-ID');
+let html='';kos.forEach((k,i)=>{
+if(!k.punya){html+=`<div class="kamar"><div style="text-align:center;margin-top:30px">🔒 Kamar ${i+1} Kosong</div><button class="btn-beli" onclick="beliKamar(${i})">Beli Rp 300k</button></div>`}
+else{let furn=k.f.join(' ');html+=`<div class="kamar isi" onclick="pilihKamar(${i})"><div>Kamar ${i+1} ${k.penghuni?'🟢 Terisi':'🔴 Kosong'}</div><div class="penghuni">${k.penghuni?'🧑‍💼':''}</div><div>${furn||'Kosongan'}</div><div class="harga">Sewa: Rp ${k.sewa.toLocaleString('id-ID')}/hari</div><button class="btn-furniture">Kelola</button></div>`}
+});document.getElementById('kosan').innerHTML=html
 }
-
-function loadData(){
-  db.collection("users").doc(userId).get().then(doc => {
-    if(doc.exists){
-      koin = doc.data().koin || 0;
-      hist = doc.data().hist || [];
-    }
-    updateUI();
-  });
-}
-
-function saveData(){
-  if(!userId) return;
-  db.collection("users").doc(userId).set({koin: koin, hist: hist});
-}
-
-function updateUI(){
-  document.getElementById('koin').innerText = 'KOIIN: ' + formatKoin(koin);
-}
-
-document.getElementById('tap').onclick = () => { tambahKoinManual(); muncratAcak(); }
-
-function tambahKoinManual(){ koin = Math.round((koin + 0.1)*10)/10; saveData(); updateUI(); }
-function tambahKoinAuto(){ koin = koin + 1; saveData(); updateUI(); }
-
-function muncratAcak(){ var btn = document.getElementById('tap'); var rect = btn.getBoundingClientRect(); var cx = rect.left + rect.width/2; var cy = rect.top + rect.height/2; for(var i=0; i<4; i++){ var sudut = Math.random() * 360; var jarak = 30 + Math.random() * 60; var x = cx + jarak * Math.cos(sudut * Math.PI / 180); var y = cy + jarak * Math.sin(sudut * Math.PI / 180); var m = document.createElement('div'); m.className='money'; m.innerHTML = ['💵','🪙','💸'][Math.floor(Math.random()*3)]; m.style.left = x + 'px'; m.style.top = y + 'px'; m.style.animationDelay = i*0.08 + 's'; document.body.appendChild(m); setTimeout(function(el){el.remove()},800, m); }}
-
-function mulaiAuto(load){
-  if(!userId){ alert('Login dulu bree!'); return; }
-  if(autoInterval) return;
-  if(!load){ autoWaktu = 3600; }
-  document.getElementById('tap').className = 'auto';
-  autoInterval = setInterval(function(){
-    tambahKoinAuto(); muncratAcak(); autoWaktu--;
-    var jam = Math.floor(autoWaktu/3600); var menit = Math.floor((autoWaktu%3600)/60); var detik = autoWaktu%60;
-    document.getElementById('btnAuto').innerText = '⏰ ' + jam + 'j ' + menit + 'm ' + detik + 'd';
-    document.getElementById('btnAuto').className = 'aktif'; document.getElementById('btnAuto').disabled = true;
-    if(autoWaktu <= 0){ clearInterval(autoInterval); autoInterval = null; document.getElementById('btnAuto').innerText = 'AKTIFKAN AUTO KLIK 1 JAM'; document.getElementById('btnAuto').className = ''; document.getElementById('btnAuto').disabled = false; document.getElementById('tap').className = ''; }
-  }, 1000);
-}
-
-function show(id){
-  if(id=='riwayat'){
-    var s=''; if(hist.length==0){s='Belum ada riwayat'}
-    for(var i=0;i<hist.length;i++){s+='<div style="border-bottom:1px solid gold; padding:8px;">'+hist[i].menu+'<br><small>'+hist[i].tgl+' - '+hist[i].ewallet+'</small></div>'}
-    document.getElementById('list').innerHTML=s;
-  }
-  document.getElementById(id).style.display='flex';
-}
-function hide(id){document.getElementById(id).style.display='none';}
-
-function tukar(menu,harga){
-  if(!userId){ alert('Login dulu bree!'); return; }
-  if(koin<harga){alert('Koin kurang! Butuh '+formatKoin(harga)) ;return;}
-  var nama=prompt('Nama Penerima:'); if(!nama)return;
-  var no=prompt('No DANA/GOPAY:'); if(!no)return;
-  koin=koin-harga;
-  var tgl = new Date().toLocaleString('id');
-  hist.unshift({menu:menu, tgl:tgl, ewallet:no});
-  saveData(); updateUI();
-  document.getElementById('isistruk').innerHTML='<b>Tarik:</b> '+menu+'<br><b>Nama:</b> '+nama+'<br><b>No:</b> '+no+'<br><b>Sisa:</b> '+formatKoin(koin)+'<br><hr>Tunggu 1x24 Jam';
-  hide('tukar'); show('struk');
-}
-</script>
-</body>
-</html>
+function beliKamar(i){if(uang>=300000){uang-=300000;kos[i]={punya:true,f:[],penghuni:false,sewa:100000};render()}else alert('Uang kurang bree!')}
+function pilihKamar(i){kamarTerpilih=i;if(!kos[i].penghuni&&kos[i].f.length>0){kos[i].penghuni=true;alert('Penghuni masuk bree! Kosan lu laku! 🎉')}render()}
+function beliF(t,h){if(uang<h){alert('Uang kurang! Tagih sewa dulu');return}let k=kos[kamarTerpilih];if(!k||!k.punya){alert('Pilih kamar dulu bree, tap kamarnya!');return}uang-=h;
+if(t=='kasur'){k.f.push('🛏️');k.sewa+=50000}
+if(t=='tv'){k.f.push('📺');k.sewa+=100000}
+if(t=='mewah'){k.f.push('✨');k.sewa+=200000}
+render()}
+setInterval(()=>{kos.forEach(k=>{if(k.punya&&k.penghuni){uang+=k.sewa/10}});render()},1000);
+render();
+</script></body></html>
