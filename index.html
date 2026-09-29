@@ -1,78 +1,41 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Rak Aquarium 10 Slot</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BETTA - Real Cartoon 10 Slot</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui}
-body{background:#cfefff;padding:10px;display:flex;justify-content:center}
-.phone{width:400px;background:#e6f7ff;border-radius:20px;padding:12px;border:3px solid #fff}
-.top{background:#2d3a8c;color:#fff;border-radius:16px;padding:10px 14px;display:flex;justify-content:space-between}
-.rack{background:#c19a6b;border-radius:16px;padding:10px;margin:12px 0;box-shadow:inset 0 0 0 4px #8b5a2b}
-.row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:8px;margin:8px 0}
-.tank{background:linear-gradient(#a8e6ff,#fff);border:3px solid #fff;border-radius:12px;height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative}
-.tank.empty{background:#fff;border-style:dashed}
-.fish{font-size:36px;animation:swim 2s infinite alternate}
-@keyframes swim{to{transform:translateX(4px)}}
-.label{position:absolute;bottom:-8px;background:#ff5a8a;color:#fff;font-size:9px;padding:2px 6px;border-radius:10px;font-weight:800}
-.btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
-.b{border:none;border-radius:12px;padding:10px;font-weight:800;color:#fff}
-.feed{background:#2ecc71}.clean{background:#3498db}.breed{background:#9b59b6}
-.count{text-align:center;margin-top:8px;font-weight:800;color:#2d3a8c}
+body{background:#b8e6b8;display:flex;justify-content:center;margin:0;font-family:sans-serif}
+.app{width:480px;background:#e8ffe8}
+.top{background:#2d6a55;color:#fff;padding:10px;border-radius:16px;margin:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;justify-content:space-between;border:3px solid #fff}
+.rack{background:#8b5a2b;margin:8px;padding:10px 8px 70px;border-radius:14px;border:4px solid #5d3a1a;position:relative}
+.tanks{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.tank{height:130px;background:linear-gradient(#c4f0ff,#87d9ff);border:3px solid #5d3a1a;border-radius:10px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.fish{width:70px;height:70px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;border:3px solid #0002;animation:swim 2s infinite alternate}
+.fish::after{content:'';position:absolute;right:-18px;top:8px;width:28px;height:38px;background:inherit;border-radius:0 60% 60% 0;border:2px solid #0002}
+.fish::before{content:'👀';position:absolute;top:12px;font-size:14px}
+.tag{position:absolute;bottom:2px;background:#fde8c0;border:2px solid #5d3a1a;border-radius:6px;font-size:8px;font-weight:800;padding:2px 4px;white-space:nowrap}
+@keyframes swim{to{transform:translateX(5px)}}
+.shelf{height:12px;background:#c89a6b;margin:10px 0;border-radius:4px;border:2px solid #5d3a1a}
+.breed{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:#5a6cff;color:#fff;border:3px solid #fff;border-radius:20px;padding:10px 24px;font-weight:800}
 </style>
 </head>
 <body>
-<div class="phone">
-<div class="top"><b>RAK #1 - 10 SLOT</b><span id="count">0/10</span></div>
+<div class="app">
+<div class="top"><b>BETTA COLLECTOR</b><span>🪙1240 💎28 🐠42</span><button>Feed All</button></div>
 <div class="rack" id="rack"></div>
-<div class="count">Maksimum 10 Aquarium per Rak!</div>
-<div class="btns">
-<button class="b feed" onclick="feedAll()">Feed All</button>
-<button class="b clean" onclick="cleanAll()">Clean</button>
-<button class="b breed" onclick="breed()">Breed</button>
-</div>
-<div id="log" style="background:#0a2a3a;color:#7fff9f;padding:8px;border-radius:10px;margin-top:10px;font-size:12px;height:60px;overflow:auto">> Rak siap bree, isi ikan!</div>
 </div>
 <script>
-let tanks=Array(10).fill(null);
-let fishes=['🔴','🔵','🟠','🟡','🟣','🟢','⚫','⚪','🟤','🔴'];
-let names=['Ruby','Aqua','Violet','Sunny','Lemon','Tide','Rosy','Moss','Cosmo','Pearl'];
-function render(){
- let r=document.getElementById('rack'); r.innerHTML='';
- let row1=document.createElement('div'); row1.className='row';
- let row2=document.createElement('div'); row2.className='row';
- tanks.forEach((f,i)=>{
-   let d=document.createElement('div'); d.className=f?'tank':'tank empty';
-   if(f){d.innerHTML=`<div class="fish">${f.emoji}</div><div class="label">${f.name}</div>`}else{d.innerHTML='<div style="font-size:24px">+</div>'}
-   d.onclick=()=>clickTank(i);
-   if(i<5) row1.appendChild(d); else row2.appendChild(d);
- });
- r.appendChild(row1); r.appendChild(document.createElement('br')); r.appendChild(row2);
- document.getElementById('count').innerText=tanks.filter(x=>x).length+'/10';
-}
-function clickTank(i){
- if(!tanks[i]){
-   if(tanks.filter(x=>x).length>=10){log('Rak penuh bree! Max 10!');return;}
-   tanks[i]={emoji:fishes[i],name:names[i],happy:true};
-   log('Isi '+names[i]+' di slot '+(i+1));
- }else{
-   log('Kasih makan '+tanks[i].name+' - Happy!'); tanks[i].happy=true;
- }
- render();
-}
-function feedAll(){log('Feed All 10 aquarium!'); render();}
-function cleanAll(){log('Bersihin semua tank!');}
-function breed(){
- let isi=tanks.filter(x=>x).length;
- if(isi<2){log('Butuh 2 ikan buat breed!');return;}
- if(isi>=10){log('Rak penuh! Gak bisa breed, jual dulu!');return;}
- let kosong=tanks.findIndex(x=>!x);
- tanks[kosong]={emoji:'🐟',name:'Burayak',happy:true};
- log('Breed sukses! Burayak di slot '+(kosong+1)); render();
-}
-function log(t){let l=document.getElementById('log'); l.innerHTML+='> '+t+'<br>'; l.scrollTop=999;}
-render();
+const data=[
+{c:'#ff2a2a',n:'Ruby Happy'},{c:'#2a8cff',n:'Aqua Hungry'},{c:'#8a4cff',n:'Violet Happy'},{c:'#ffde2a',n:'Sunny Sleepy'},{c:'#ff8c2a',n:'Lemon Happy'},
+{c:'#2aff8c',n:'Tide Happy'},{c:'#ff6fae',n:'Rosy Hungry'},{c:'#ffffff',n:'Moss Happy'},{c:'#1a1a4a',n:'Cosmo Happy'},{c:'#2ac4d4',n:'Pearl Happy'}
+];
+let html='<div class="tanks">';
+data.slice(0,5).forEach(f=>{html+=`<div class="tank"><div class="fish" style="background:${f.c}"></div><div class="tag">${f.n}</div></div>`});
+html+='</div><div class="shelf"></div><div class="tanks">';
+data.slice(5).forEach(f=>{html+=`<div class="tank"><div class="fish" style="background:${f.c}"></div><div class="tag">${f.n}</div></div>`});
+html+='</div><div class="shelf"></div><div class="breed">⭐ Breed Bettas ⭐</div>';
+document.getElementById('rack').innerHTML=html;
 </script>
 </body>
 </html>
