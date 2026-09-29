@@ -1,88 +1,59 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Betta Sultan - PERSIS GAMBAR</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Betta Breeding - Peternak Cupang</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&display=swap');
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Fredoka',sans-serif}
-body{background:#0e2848;height:100vh;display:flex;flex-direction:column;overflow:hidden}
-.top{background:linear-gradient(90deg,#12335f,#1e4f8a);padding:10px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #ffcc00;color:white}
-.main{flex:1;position:relative;background:#0a1f3a;overflow:hidden}
-.screen{position:absolute;inset:0;display:none;overflow-y:auto;background:#f5e6c8;padding:10px}
-.screen.active{display:block}
-.jar{width:100%;height:220px;background:radial-gradient(ellipse at center,#2a6a8a 0%,#12344f 70%);border:3px solid rgba(255,255,255,0.3);border-radius:20px 20px 40px 40px;position:relative;overflow:hidden;box-shadow:inset 0 0 30px rgba(100,200,255,0.2)}
-.fish{position:absolute;font-size:52px;left:30%;top:35%;animation:swim 4s infinite alternate}
-@keyframes swim{0%{transform:translateX(0) rotate(0deg)}100%{transform:translateX(80px) rotate(5deg)}}
-.bubble{position:absolute;width:6px;height:6px;background:radial-gradient(white,#8cf);border-radius:50%;animation:up 3s linear infinite}
-@keyframes up{to{transform:translateY(-200px)}}
-.card{background:white;border-radius:16px;padding:10px;margin:8px 0;box-shadow:0 3px 0 #c9a86a;border:2px solid #e6c88a}
-.breed-pair{display:flex;gap:8px}
-.breed-pair .card{flex:1;text-align:center}
-.compat{background:linear-gradient(90deg,#ff5c8a,#ff2d78);height:22px;border-radius:20px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800}
-.shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.shop-grid .card{text-align:center}
-.btn{border:none;border-radius:12px;padding:12px;font-weight:800;cursor:pointer;width:100%}
-.btn-feed{background:linear-gradient(#ffde59,#ff9c00)}
-.btn-breed{background:linear-gradient(#ff7eb8,#ff2d78);color:white;font-size:18px}
-.btn-fight{padding:10px 4px;font-size:12px;color:white}
-.vs{width:70px;height:70px;background:radial-gradient(#ffd700,#ff6a00);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:white;box-shadow:0 0 20px orange,0 0 0 4px white;animation:pulse 1s infinite;margin:10px auto}
-@keyframes pulse{50%{transform:scale(1.1)}}
-.hp{height:10px;background:#000;border-radius:5px;overflow:hidden}
-.hp-fill{height:100%;transition:0.5s}
-.nav{display:flex;background:#122a50;border-top:3px solid #5aa0ff}
-.nav button{flex:1;background:transparent;border:none;color:#8bb0ff;font-weight:700;font-size:10px;padding:8px 2px}
-.nav button.active{background:#2a6bff;color:white;border-radius:12px;margin:4px}
-.food{position:absolute;width:7px;height:7px;background:#d2a24c;border-radius:50%}
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui}
+body{background:#a2e8ff;min-height:100vh;padding:10px}
+.top{background:#4fb6d1;border-radius:20px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;color:#fff}
+.money{background:#fff8c8;border-radius:12px;padding:8px 14px;color:#1a3c6e;font-weight:800}
+.card{background:#fff;border-radius:18px;padding:14px;margin:12px 0;box-shadow:0 4px 0 #2a8daa}
+.fish{display:flex;align-items:center;gap:12px;background:#f7fbff;border-radius:16px;padding:10px;margin:8px 0;border:2px solid #cdeeff}
+.btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}
+.b{border:none;border-radius:16px;padding:14px;font-weight:800;color:#fff;font-size:16px}
+.kawin{background:#ff5a6a}.rawat{background:#2ecc71}.tarung{background:#ff9f1c}
+.shop{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sbtn{background:#fff;border:2px dashed #4fb6d1;border-radius:14px;padding:10px;text-align:center}
+.log{background:#0f2a3a;color:#7ef0a0;padding:10px;border-radius:12px;font-size:13px;height:110px;overflow:auto;margin-top:10px}
 </style>
 </head>
 <body>
-<div class="top"><b>🐟 BETTA SULTAN</b><div>🪙 <span id="coins">1240</span> 💎 58</div></div>
-<div class="main">
-
-<!-- FEED = GAMBAR 2 -->
-<div class="screen active" id="feed">
-<div class="jar" id="jar1"><div class="fish" id="mainFish">🐟</div></div>
-<div class="card"><b>🍽️ Feeding Mode</b><br><small>Tap FEED atau tap air di toples! Ikan ngejar pelet!</small><br><br><button class="btn btn-feed" onclick="doFeed()">🍪 FEED NOW</button><div style="margin-top:8px"><small>Energy 85/100</small><div class="hp"><div style="width:85%;background:#1ec27a;height:100%"></div></div></div></div>
-<div class="card"><b>🧪 ESSENTIALS</b><div style="display:flex;gap:6px;margin-top:6px"><div style="flex:1;background:#fff3c2;padding:6px;border-radius:10px;text-align:center">🫙<br>Glass Jar<br><small>80 coins</small></div><div style="flex:1;background:#fff3c2;padding:6px;border-radius:10px;text-align:center">🪵<br>Driftwood<br><small>120 coins</small></div><div style="flex:1;background:#fff3c2;padding:6px;border-radius:10px;text-align:center">🍪<br>Pellet<br><small>60 coins</small></div></div></div>
+<div class="top"><h3>🐟 BETTA BREEDER GRESIK</h3><div class="money">💰 Rp <span id="duit">500000</span></div></div>
+<div class="card">
+<h4>📦 INVENTARIS</h4>
+<div id="inv"></div>
+<div class="btns">
+<button class="b kawin" onclick="kawin()">❤️ KAWIN</button>
+<button class="b rawat" onclick="rawat()">🌱 RAWAT</button>
+<button class="b tarung" onclick="tarung()">⚔️ TARUNG</button>
 </div>
-
-<!-- BREED = GAMBAR 3 -->
-<div class="screen" id="breed">
-<h3 style="text-align:center;color:#5a2a00">💖 BREEDING PAIR ✨</h3>
-<div class="breed-pair"><div class="card" style="background:linear-gradient(#ffdede,#ff9a9a);border-color:#ff6b6b"><b>CRIMSON ♂</b><br><small>Male • Lv.5</small><div style="font-size:40px">🐟</div><small>Calm<br>Strong Tail</small></div><div class="card" style="background:linear-gradient(#dedeff,#9a9aff);border-color:#6b6bff"><b>AZURE ♀</b><br><small>Female • Lv.4</small><div style="font-size:40px">🐟</div><small>Gentle<br>Vibrant</small></div></div>
-<div class="card" style="background:#ffe6e6;border:2px dashed #ff8a8a"><b>💖 COMPATIBILITY METER 💖</b><div style="display:flex;align-items:center;gap:6px;margin:6px 0"><b style="color:#ff2d78;font-size:22px">87%</b><div style="flex:1;background:#0002;height:18px;border-radius:20px;overflow:hidden"><div class="compat" style="width:87%">❤️ 87%</div></div><span style="background:#ff2d78;color:white;padding:2px 6px;border-radius:8px;font-size:10px">EXCELLENT!</span></div><small>Breed Success: 82% • Genetic Diversity: High</small></div>
-<div class="jar" style="height:120px"><div style="position:absolute;left:30%;top:30%;font-size:30px">🐟</div><div style="position:absolute;right:30%;top:30%;font-size:30px;transform:scaleX(-1)">🐟</div><div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)">💖</div></div>
-<button class="btn btn-breed" onclick="doBreed()">💖 BREED -20 Energy • Start 🥚</button><div id="breedRes" style="text-align:center;margin-top:8px"></div>
+<div class="log" id="log">> Selamat datang Peternak! Beli ikan di toko dulu bree...<br></div>
 </div>
-
-<!-- FIGHT = GAMBAR 4 -->
-<div class="screen" id="fight">
-<h3 style="text-align:center">⚔️ FIGHT AI - TOURNAMENT</h3>
-<div style="display:flex;gap:8px;margin:8px 0"><div class="card" style="flex:1;background:#1a1a2e;color:white;margin:0"><small>RED BETTA — YOU</small><br><b>HP <span id="myHP">78</span>/100</b><div class="hp"><div id="myBar" class="hp-fill" style="width:78%;background:#ff3b3b"></div></div><small>LV.5 🛡️ GUARD 12</small></div><div class="card" style="flex:1;background:#1a1a2e;color:white;margin:0"><small>BLUE BETTA — AI</small><br><b>HP <span id="aiHP">62</span>/100</b><div class="hp"><div id="aiBar" class="hp-fill" style="width:62%;background:#3b8bff"></div></div><small>LV.5 ⚡ AGGRESSIVE</small></div></div>
-<div class="card" style="background:#0a1628;color:white;text-align:center;position:relative;height:140px"><div style="display:flex;justify-content:space-between"><div style="font-size:40px">🐟</div><div style="font-size:40px;transform:scaleX(-1)">🐟</div></div><div class="vs">VS</div><div id="fightLog" style="background:black;color:#0f0;padding:4px;border-radius:6px;font-size:11px;margin-top:6px">> Red flares! AI preparing counter...</div></div>
-<div style="display:flex;gap:6px"><button class="btn btn-fight" style="background:linear-gradient(#ff4d4d,#a00000)" onclick="doFight('attack')">⚔️ ATTACK<br><small>DMG 18-22</small></button><button class="btn btn-fight" style="background:linear-gradient(#7a4dff,#3a00a0)" onclick="doFight('flare')">🔥 FLARE<br><small>BUFF +10</small></button><button class="btn btn-fight" style="background:linear-gradient(#4de1ff,#0080a0)" onclick="doFight('dodge')">💨 DODGE<br><small>EVADE 40%</small></button></div>
+<div class="card">
+<h4>🛒 TOKO IKAN</h4>
+<div class="shop">
+<div class="sbtn" onclick="beli('Plakat Merah',50000)">🔴 Plakat Merah<br>Rp 50k</div>
+<div class="sbtn" onclick="beli('Halfmoon',75000)">🔵 Halfmoon<br>Rp 75k</div>
+<div class="sbtn" onclick="beli('Crown Tail',100000)">🟠 Crown Tail<br>Rp 100k</div>
+<div class="sbtn" onclick="beli('Plakat Super Red',150000)">⭐ Super Red<br>Rp 150k</div>
 </div>
-
-<!-- SHOP = GAMBAR 5 -->
-<div class="screen" id="shop">
-<h3 style="text-align:center">🏪 BETTA FISH BREEDS</h3>
-<div class="shop-grid"><div class="card"><b>Common Betta</b><div style="font-size:36px">🐟</div><div style="background:#ffde59;padding:2px 8px;border-radius:12px;display:inline-block">🪙 50</div><br><button class="btn" style="background:#1ec25a;color:white;padding:6px;margin-top:6px" onclick="buyFish(50)">BUY</button></div><div class="card"><b>Halfmoon</b><div style="font-size:36px">🐟</div><div style="background:#ffde59;padding:2px 8px;border-radius:12px;display:inline-block">🪙 200</div><br><button class="btn" style="background:#1ec25a;color:white;padding:6px;margin-top:6px" onclick="buyFish(200)">BUY</button></div><div class="card"><b>Crown Tail</b><div style="font-size:36px">🐟</div><div style="background:#ffde59;padding:2px 8px;border-radius:12px;display:inline-block">🪙 500</div><br><button class="btn" style="background:#1ec25a;color:white;padding:6px;margin-top:6px" onclick="buyFish(500)">BUY</button></div><div class="card" style="border-color:#7a4dff;box-shadow:0 0 15px #7a4dff55"><b>Galaxy ✨</b><div style="font-size:36px">🌌🐟</div><div style="background:linear-gradient(#7a4dff,#ff4dff);color:white;padding:2px 8px;border-radius:12px;display:inline-block">🪙 1000</div><br><button class="btn" style="background:#1ec25a;color:white;padding:6px;margin-top:6px" onclick="buyFish(1000)">BUY</button></div></div>
-<h4 style="margin-top:10px;text-align:center">🧪 ESSENTIALS</h4><div style="display:flex;gap:6px"><div class="card" style="flex:1;text-align:center">🫙<br>Glass Jar<br>80</div><div class="card" style="flex:1;text-align:center">🪵<br>Driftwood<br>120</div><div class="card" style="flex:1;text-align:center">🍪<br>Pellet<br>60</div></div>
 </div>
-
-</div>
-<div class="nav"><button class="active" onclick="openTab('feed',this)">🏠<br>Home</button><button onclick="openTab('breed',this)">💖<br>Breeding</button><button onclick="openTab('fight',this)">⚔️<br>Fight AI</button><button onclick="openTab('shop',this)">🏪<br>Shop</button></div>
 <script>
-let coins=1240,myHP=78,aiHP=62,foods=[];
-function openTab(id,btn){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
-function pop(t){let d=document.createElement('div');d.style.position='absolute';d.style.left='50%';d.style.top='40%';d.style.transform='translate(-50%,-50%)';d.style.background='rgba(0,0,0,0.85)';d.style.color='#ffd700';d.style.padding='10px 18px';d.style.borderRadius='20px';d.style.fontWeight='900';d.style.zIndex='99';d.innerText=t;document.querySelector('.main').appendChild(d);setTimeout(()=>d.remove(),1200)}
-function doFeed(){for(let i=0;i<3;i++){let f=document.createElement('div');f.className='food';f.style.left=(20+Math.random()*60)+'%';f.style.top='10px';document.getElementById('jar1').appendChild(f);foods.push(f);let y=10;let it=setInterval(()=>{y+=2;f.style.top=y+'px';if(y>180){clearInterval(it);f.remove()}},30)}coins+=5;document.getElementById('coins').innerText=coins;pop('FEED! +5 🪙')}
-function doBreed(){if(coins<50){pop('Koin kurang!');return}coins-=50;coins+=100;document.getElementById('coins').innerText=coins;document.getElementById('breedRes').innerHTML='<div class="card" style="background:#ffdeef">🥚 Bubble nest! <b style="color:#ff2d78">NEW GALAXY BETTA!</b> +100!</div>';pop('BREED SUCCESS! 💖')}
-function doFight(a){let dmgM=15+Math.floor(Math.random()*10),dmgA=10+Math.floor(Math.random()*10);if(a==='attack'){aiHP-=dmgM}if(a==='flare'){aiHP-=dmgM+8}if(a==='dodge'&&Math.random()<0.4){dmgA=0;document.getElementById('fightLog').innerText='> DODGE SUCCESS!';}else{document.getElementById('fightLog').innerText='> YOU '+a.toUpperCase()+'! -'+dmgM+' to AI!'}myHP-=dmgA;myHP=Math.max(0,myHP);aiHP=Math.max(0,aiHP);document.getElementById('myHP').innerText=myHP;document.getElementById('aiHP').innerText=aiHP;document.getElementById('myBar').style.width=myHP+'%';document.getElementById('aiBar').style.width=aiHP+'%';coins+=10;document.getElementById('coins').innerText=coins;if(aiHP<=0){document.getElementById('fightLog').innerText='🏆 MENANG! +80 coin!';coins+=80;document.getElementById('coins').innerText=coins;setTimeout(()=>{myHP=78;aiHP=62;document.getElementById('myHP').innerText=78;document.getElementById('aiHP').innerText=62;document.getElementById('myBar').style.width='78%';document.getElementById('aiBar').style.width='62%'},1500)}}
-function buyFish(p){if(coins<p){pop('Koin kurang! Fight dulu!');return}coins-=p;document.getElementById('coins').innerText=coins;pop('BOUGHT! -'+p+' 🪙')}
-setInterval(()=>{let b=document.createElement('div');b.className='bubble';b.style.left=(10+Math.random()*80)+'%';b.style.bottom='0%';document.getElementById('jar1').appendChild(b);setTimeout(()=>b.remove(),3000)},400);
-document.getElementById('jar1').addEventListener('click',doFeed);
+let duit=500000;
+let fishes=[{nama:'Plakat Merah',lvl:1,jumlah:1},{nama:'Halfmoon',lvl:1,jumlah:0},{nama:'Crown Tail',lvl:1,jumlah:0}];
+function render(){
+ document.getElementById('duit').innerText=duit.toLocaleString('id-ID');
+ let h=''; fishes.forEach(f=>{if(f.jumlah>0)h+=`<div class="fish"><div style="font-size:40px">${f.nama.includes('Plakat')?'🔴':f.nama.includes('Half')?'🔵':'🟠'}</div><div><b>${f.nama}</b><br><small>Level ${f.lvl} - ${f.lvl<3?'Burayak':f.lvl<5?'Remaja':'Dewasa'}</small></div><div style="margin-left:auto;font-weight:800">x${f.jumlah}</div></div>`;});
+ if(!h)h='<small>Belum punya ikan!</small>'; document.getElementById('inv').innerHTML=h;
+}
+function addLog(t){let l=document.getElementById('log');l.innerHTML+='> '+t+'<br>';l.scrollTop=9999;}
+function beli(nama,harga){if(duit<harga){addLog('Duit kurang buat '+nama);return;}duit-=harga;let f=fishes.find(x=>x.nama==nama);if(!f)fishes.push({nama,lvl:1,jumlah:1});else f.jumlah++;render();addLog('Beli '+nama);}
+function rawat(){let a=fishes.find(f=>f.jumlah>0);if(!a){addLog('Gak ada ikan');return;}a.lvl++;if(a.lvl>5)a.lvl=5;render();addLog(a.nama+' jadi Level '+a.lvl);}
+function kawin(){let induk=fishes.filter(f=>f.jumlah>=1&&f.lvl>=4);if(induk.length<2){addLog('Butuh 2 ikan dewasa lvl4+! Rawat dulu!');return;}let anak=induk[Math.floor(Math.random()*induk.length)].nama;let f=fishes.find(x=>x.nama==anak);f.jumlah++;addLog('Kawin sukses! Dapat burayak '+anak);render();}
+function tarung(){let p=fishes.find(f=>f.jumlah>0&&f.lvl>=3);if(!p){addLog('Ikan lvl3+ buat tarung!');return;}let ml=Math.floor(Math.random()*5)+1;let menang=p.lvl>=ml||Math.random()>0.4;if(menang){duit+=200000;addLog('⚔️ '+p.nama+' MENANG vs lvl'+ml+'! +200k')}else{p.jumlah--;addLog('💀 '+p.nama+' KALAH vs lvl'+ml+'! Mati 1');}render();}
+render();
 </script>
 </body>
 </html>
