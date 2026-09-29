@@ -3,49 +3,76 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>BETTA FISH BREEDING</title>
+<title>Rak Aquarium 10 Slot</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&display=swap');
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Fredoka',system-ui}
-body{background:#c9f1ff;display:flex;justify-content:center;min-height:100vh}
-.phone{width:390px;background:linear-gradient(180deg,#e8fbff 0%,#bdeeff 100%);min-height:100vh;padding-bottom:90px;position:relative}
-.status{display:flex;justify-content:space-between;padding:12px 18px;font-weight:600}
-.header{margin:8px 16px;background:linear-gradient(180deg,#6ac6dd,#4aa9c5);border-radius:28px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 0 #2c7d95;border:3px solid #fff}
-.money-bar{margin:14px 16px;background:#fff6c1;border:3px solid #fff;border-radius:18px;padding:8px 10px;display:flex;justify-content:space-between;box-shadow:0 4px 0 #e6c86a}
-.coin{width:42px;height:42px;background:radial-gradient(#ffe88a,#ffb400);border-radius:50%;border:3px solid #c48a00;display:flex;align-items:center;justify-content:center}
-.money-text{color:#1a2e7a;font-size:28px;font-weight:800}
-.plus{width:44px;height:44px;background:linear-gradient(#7de07d,#3cb43c);border-radius:14px;border:3px solid #fff;display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px}
-.inventory-box{margin:12px 16px;background:linear-gradient(#9eddf0,#6bc4df);border-radius:24px;padding:10px;border:3px solid #fff;box-shadow:0 4px 0 #2c7d95}
-.inv-title{color:#0a3a5a;font-size:20px;font-weight:800;text-align:center;padding:6px}
-.fish-card{background:#fffdf5;border-radius:20px;padding:12px 14px;display:flex;gap:12px;margin:10px 6px;box-shadow:0 4px 0 #2c7d95}
-.fish-icon{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:42px}
-.level-badge{padding:2px 10px;border-radius:10px;color:#fff;font-size:14px;font-weight:700}
-.lvl5{background:#42c07a}.lvl3{background:#8a7bdf}.lvl4{background:#ff9f2e}
-.aksi-title{color:#0a3a5a;font-size:24px;font-weight:800;text-align:center;margin:14px 0 10px}
-.aksi-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:0 16px}
-.aksi-btn{border-radius:20px;padding:14px 6px;border:3px solid #fff;box-shadow:0 5px 0 rgba(0,0,0,0.25);color:#fff;font-weight:800;font-size:20px;text-align:center;cursor:pointer}
-.btn-kawin{background:linear-gradient(#ff7a8a,#e94056)}.btn-rawat{background:linear-gradient(#7de07d,#2db82d)}.btn-tarung{background:linear-gradient(#ffbd59,#ff8a1a)}
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;background:#fff;border-radius:24px 24px 0 0;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;padding:10px 0 18px;text-align:center}
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui}
+body{background:#cfefff;padding:10px;display:flex;justify-content:center}
+.phone{width:400px;background:#e6f7ff;border-radius:20px;padding:12px;border:3px solid #fff}
+.top{background:#2d3a8c;color:#fff;border-radius:16px;padding:10px 14px;display:flex;justify-content:space-between}
+.rack{background:#c19a6b;border-radius:16px;padding:10px;margin:12px 0;box-shadow:inset 0 0 0 4px #8b5a2b}
+.row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:8px;margin:8px 0}
+.tank{background:linear-gradient(#a8e6ff,#fff);border:3px solid #fff;border-radius:12px;height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative}
+.tank.empty{background:#fff;border-style:dashed}
+.fish{font-size:36px;animation:swim 2s infinite alternate}
+@keyframes swim{to{transform:translateX(4px)}}
+.label{position:absolute;bottom:-8px;background:#ff5a8a;color:#fff;font-size:9px;padding:2px 6px;border-radius:10px;font-weight:800}
+.btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
+.b{border:none;border-radius:12px;padding:10px;font-weight:800;color:#fff}
+.feed{background:#2ecc71}.clean{background:#3498db}.breed{background:#9b59b6}
+.count{text-align:center;margin-top:8px;font-weight:800;color:#2d3a8c}
 </style>
 </head>
 <body>
 <div class="phone">
-<div class="status"><span>09:41</span><span>📶 84%</span></div>
-<div class="header"><div style="display:flex;gap:10px;align-items:center"><div style="font-size:48px">🐟</div><h1 style="color:#fff;text-shadow:0 2px 0 #2c7d95">BETTA FISH<br>BREEDING</h1></div><div style="font-size:36px">⚙️</div></div>
-<div class="money-bar"><div style="display:flex;gap:8px;align-items:center"><div class="coin">💰</div><div class="money-text">Rp 500.000</div></div><div class="plus" onclick="alert('Nambah duit +500k!')">+</div></div>
-<div class="inventory-box">
-<div style="text-align:center;color:#0a3a5a;font-weight:800">✨ INVENTARIS IKAN CUPANG ✨</div>
-<div class="fish-card"><div class="fish-icon" style="background:#ffb3b3">🔴</div><div><b>Plakat Merah</b><br><span class="level-badge lvl5">Level 5</span></div><div style="margin-left:auto;text-align:right"><b>x3</b><br><small>Sehat • Siap Kawin</small></div></div>
-<div class="fish-card"><div class="fish-icon" style="background:#c3bfff">🔵</div><div><b>Halfmoon</b><br><span class="level-badge lvl3">Level 3</span></div><div style="margin-left:auto;text-align:right"><b>x2</b><br><small>Sehat • Enerjik</small></div></div>
-<div class="fish-card"><div class="fish-icon" style="background:#ffcf8a">🟠</div><div><b>Crown Tail</b><br><span class="level-badge lvl4">Level 4</span></div><div style="margin-left:auto;text-align:right"><b>x1</b><br><small>Sehat • Aktif</small></div></div>
+<div class="top"><b>RAK #1 - 10 SLOT</b><span id="count">0/10</span></div>
+<div class="rack" id="rack"></div>
+<div class="count">Maksimum 10 Aquarium per Rak!</div>
+<div class="btns">
+<button class="b feed" onclick="feedAll()">Feed All</button>
+<button class="b clean" onclick="cleanAll()">Clean</button>
+<button class="b breed" onclick="breed()">Breed</button>
 </div>
-<div class="aksi-title">🐟 AKSI</div>
-<div class="aksi-grid">
-<div class="aksi-btn btn-kawin" onclick="alert('Kawin sukses!')">❤️<br>Kawin</div>
-<div class="aksi-btn btn-rawat" onclick="alert('Dirawat! Level naik!')">🌱<br>Rawat</div>
-<div class="aksi-btn btn-tarung" onclick="alert('Tarung menang +200k!')">⚔️<br>Tarung</div>
+<div id="log" style="background:#0a2a3a;color:#7fff9f;padding:8px;border-radius:10px;margin-top:10px;font-size:12px;height:60px;overflow:auto">> Rak siap bree, isi ikan!</div>
 </div>
-<div class="bottom-nav"><div>🏠<br>Beranda</div><div>🐟<br>Inventaris</div><div>🛒<br>Toko</div><div>📋<br>Tugas</div></div>
-</div>
+<script>
+let tanks=Array(10).fill(null);
+let fishes=['🔴','🔵','🟠','🟡','🟣','🟢','⚫','⚪','🟤','🔴'];
+let names=['Ruby','Aqua','Violet','Sunny','Lemon','Tide','Rosy','Moss','Cosmo','Pearl'];
+function render(){
+ let r=document.getElementById('rack'); r.innerHTML='';
+ let row1=document.createElement('div'); row1.className='row';
+ let row2=document.createElement('div'); row2.className='row';
+ tanks.forEach((f,i)=>{
+   let d=document.createElement('div'); d.className=f?'tank':'tank empty';
+   if(f){d.innerHTML=`<div class="fish">${f.emoji}</div><div class="label">${f.name}</div>`}else{d.innerHTML='<div style="font-size:24px">+</div>'}
+   d.onclick=()=>clickTank(i);
+   if(i<5) row1.appendChild(d); else row2.appendChild(d);
+ });
+ r.appendChild(row1); r.appendChild(document.createElement('br')); r.appendChild(row2);
+ document.getElementById('count').innerText=tanks.filter(x=>x).length+'/10';
+}
+function clickTank(i){
+ if(!tanks[i]){
+   if(tanks.filter(x=>x).length>=10){log('Rak penuh bree! Max 10!');return;}
+   tanks[i]={emoji:fishes[i],name:names[i],happy:true};
+   log('Isi '+names[i]+' di slot '+(i+1));
+ }else{
+   log('Kasih makan '+tanks[i].name+' - Happy!'); tanks[i].happy=true;
+ }
+ render();
+}
+function feedAll(){log('Feed All 10 aquarium!'); render();}
+function cleanAll(){log('Bersihin semua tank!');}
+function breed(){
+ let isi=tanks.filter(x=>x).length;
+ if(isi<2){log('Butuh 2 ikan buat breed!');return;}
+ if(isi>=10){log('Rak penuh! Gak bisa breed, jual dulu!');return;}
+ let kosong=tanks.findIndex(x=>!x);
+ tanks[kosong]={emoji:'🐟',name:'Burayak',happy:true};
+ log('Breed sukses! Burayak di slot '+(kosong+1)); render();
+}
+function log(t){let l=document.getElementById('log'); l.innerHTML+='> '+t+'<br>'; l.scrollTop=999;}
+render();
+</script>
 </body>
 </html>
